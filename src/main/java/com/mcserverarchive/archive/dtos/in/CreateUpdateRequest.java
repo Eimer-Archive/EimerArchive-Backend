@@ -11,17 +11,15 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateUpdateRequest {
 
+    private int id;
     private String name;
     private String version;
-    private String externalLink;
     private String description;
     private List<String> versions;
     private List<String> software;
 
     public boolean isMissingRequirements() {
-        return this.name == null || this.name.isEmpty()
-            || this.version == null || this.version.isEmpty()
-            || this.externalLink == null || this.externalLink.isEmpty()
+        return this.version == null || this.version.isEmpty()
             || this.description == null || this.description.isEmpty();
     }
 }

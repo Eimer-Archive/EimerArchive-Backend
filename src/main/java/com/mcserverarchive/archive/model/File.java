@@ -40,17 +40,19 @@ public class File {
     @Column(nullable = false)
     private String filename;
 
+    // Minecraft Versions
     @ElementCollection
     private List<String> versions;
+
+    // File version/build number
+    @Column(nullable = false)
+    private String version;
 
     @ElementCollection
     private List<String> software;
 
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private String version;
 
     @Column(nullable = false)
     private int downloads;

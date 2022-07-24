@@ -61,22 +61,23 @@ public class ResourceUpdateService {
         return this.updateRepository.save(file);
     }
 
-    public void createUpdate(Account account, int resourceId,
-                             MultipartFile file, CreateUpdateRequest request) throws RestException {
+    public void createUpdate(MultipartFile file, CreateUpdateRequest request) throws RestException {
 
         //if (this.updateRepository.getUpdatesCreateLastHour(account.getId()) > this.siteConfig.getMaxUpdatesPerHour()) throw new RestException(RestErrorCode.TOO_MANY_RESOURCE_UPDATES);
 
-        if ((file.isEmpty() || file.getSize() > this.siteConfig.getMaxUploadSize().toBytes()) && (request.getExternalLink() == null || request.getExternalLink().isEmpty())) throw new RestException(RestErrorCode.REQUIRED_ARGUMENTS_MISSING, "Missing File");
-        if ((!file.getOriginalFilename().endsWith(".jar") && !file.getOriginalFilename().endsWith(".zip")) && request.getExternalLink().equals("")) throw new RestException(RestErrorCode.WRONG_FILE_TYPE);
+        if ((file.isEmpty() /*|| file.getSize() > this.siteConfig.getMaxUploadSize().toBytes()*/)) throw new RestException(RestErrorCode.REQUIRED_ARGUMENTS_MISSING, "Missing File");
+        if ((!file.getOriginalFilename().endsWith(".jar") && !file.getOriginalFilename().endsWith(".zip"))) throw new RestException(RestErrorCode.WRONG_FILE_TYPE);
         if (request.isMissingRequirements()) throw new RestException(RestErrorCode.REQUIRED_ARGUMENTS_MISSING, "Missing name, version or description.");
 
-        Resource resource = this.resourceRepository.findById(resourceId).orElseThrow(() -> new RestException(RestErrorCode.RESOURCE_NOT_FOUND));
+        Resource resource = this.resourceRepository.findById(request.getId()).orElseThrow(() -> new RestException(RestErrorCode.RESOURCE_NOT_FOUND));
         File update;
         if (file.isEmpty()) {
             update = new File(request.getDescription(), null, request.getVersion(), request.getName(), request.getVersions(), request.getSoftware(), resource);
         } else {
-            update = new File(request.getDescription(), file.getOriginalFilename(), request.getVersion(), request.getName(), request.getVersions(), request.getSoftware(), resource);
-            Path resourcePath = BASE_PATH.resolve(update.getId() + ".jar");
+            update = new File(request.getDescription(), file.getOriginalFilename(), request.getVersion(), file.getName(), request.getVersions(), request.getSoftware(), resource);
+            Path path = BASE_PATH.resolve(update.getId() + "/");
+            path.toFile().mkdirs();
+            Path resourcePath = BASE_PATH.resolve(update.getId() + "/" + file.getName() +  ".jar");
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, resourcePath);
             } catch (IOException e) {
