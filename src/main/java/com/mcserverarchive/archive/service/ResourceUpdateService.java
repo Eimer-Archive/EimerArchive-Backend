@@ -6,8 +6,8 @@ import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateUpdateRequest;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import com.mcserverarchive.archive.model.Account;
-import com.mcserverarchive.archive.model.Resource;
 import com.mcserverarchive.archive.model.File;
+import com.mcserverarchive.archive.model.Resource;
 import com.mcserverarchive.archive.repositories.ResourceRepository;
 import com.mcserverarchive.archive.repositories.UpdateRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -75,16 +78,33 @@ public class ResourceUpdateService {
             update = new File(request.getDescription(), null, request.getVersion(), request.getName(), request.getVersions(), request.getSoftware(), resource);
         } else {
             update = new File(request.getDescription(), file.getOriginalFilename(), request.getVersion(), file.getName(), request.getVersions(), request.getSoftware(), resource);
-            Path path = BASE_PATH.resolve(update.getId() + "/");
-            path.toFile().mkdirs();
-            Path resourcePath = BASE_PATH.resolve(update.getId() + "/" + file.getName() +  ".jar");
-            try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, resourcePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         this.updateRepository.save(update);
+
+        try (InputStream inputStream = file.getInputStream()) {
+
+            // PUT request to upload file to server with headers
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://mc-archive.justdoom.workers.dev/" + update.getResource().getId() + "/" + update.getId() + "/" + file.getOriginalFilename()).openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("X-Custom-Auth-Key", "test");
+            connection.setUseCaches(false);
+            connection.setAllowUserInteraction(false);
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+            connection.connect();
+            try (OutputStream outputStream = connection.getOutputStream()) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+            connection.getInputStream();
+            connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public FileReturn getDownload(int updateId) throws RestException {
