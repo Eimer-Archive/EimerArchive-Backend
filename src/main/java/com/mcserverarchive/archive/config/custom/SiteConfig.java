@@ -15,6 +15,7 @@ import org.springframework.util.unit.DataUnit;
 public class SiteConfig {
 
     private final String domain;
+    private final String key;
     private final int maxUpdatesPerHour;
     private final int maxCreationsPerHour;
 

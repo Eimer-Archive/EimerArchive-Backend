@@ -22,9 +22,9 @@ public interface ResourceRepository extends JpaRepository<Resource, Integer>, Qu
     default void customize(QuerydslBindings bindings, QResource root) {
         bindings.including(
             root.name,
-            root.category,
-            root.author.username,
-            root.author.id
+            root.category
+            //root.author.username,
+            //root.author.id
         );
         bindings.excludeUnlistedProperties(true);
     }

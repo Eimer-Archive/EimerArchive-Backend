@@ -87,11 +87,11 @@ public class ResourceUpdateService {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://mc-archive.justdoom.workers.dev/" + update.getResource().getId() + "/" + update.getId() + "/" + file.getOriginalFilename()).openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("PUT");
-            connection.setRequestProperty("X-Custom-Auth-Key", "test");
+            connection.setRequestProperty("X-Custom-Auth-Key", this.siteConfig.getKey());
             connection.setUseCaches(false);
             connection.setAllowUserInteraction(false);
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(100000);
+            connection.setReadTimeout(100000);
             connection.connect();
             try (OutputStream outputStream = connection.getOutputStream()) {
                 byte[] buffer = new byte[1024];
