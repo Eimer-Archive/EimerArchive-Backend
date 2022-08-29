@@ -6,14 +6,15 @@ import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.account.CreateAccountRequest;
 import com.mcserverarchive.archive.dtos.in.account.UpdateAccountRequest;
 import com.mcserverarchive.archive.model.Account;
+import com.mcserverarchive.archive.model.Token;
 import com.mcserverarchive.archive.repositories.AccountRepository;
+import com.mcserverarchive.archive.repositories.TokenRepository;
 import com.mcserverarchive.archive.util.ImageUtil;
 import com.mcserverarchive.archive.util.ValidationHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,13 +22,17 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
 
     private final SiteConfig siteConfig;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return accountRepository.findByUsernameEqualsIgnoreCase(s).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public void createToken(Token token) {
+        tokenRepository.save(token);
     }
 
     public Account register(CreateAccountRequest request) throws RestException {
@@ -40,7 +45,7 @@ public class AccountService implements UserDetailsService {
         if (this.accountRepository.existsByUsernameEqualsIgnoreCase(username)) throw new RestException(RestErrorCode.USERNAME_NOT_AVAILABLE);
         if (this.accountRepository.existsByEmailEqualsIgnoreCase(email)) throw new RestException(RestErrorCode.EMAIL_NOT_AVAILABLE);
 
-        Account account = new Account(username, email, this.passwordEncoder.encode(request.getPassword()));
+        Account account = new Account(username, email, request.getPassword());
         this.accountRepository.save(account);
 
         return account;
@@ -48,6 +53,10 @@ public class AccountService implements UserDetailsService {
 
     public Account getAccount(int id) throws RestException {
         return this.accountRepository.findById(id).orElseThrow(() -> new RestException(RestErrorCode.ACCOUNT_NOT_FOUND));
+    }
+
+    public Account getAccountByUsername(String username) throws RestException {
+        return this.accountRepository.findByUsernameEquals(username).orElseThrow(() -> new RestException(RestErrorCode.ACCOUNT_NOT_FOUND));
     }
 
     // todo will there be concurrency issues with performing this all in one update?

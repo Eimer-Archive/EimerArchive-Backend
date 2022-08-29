@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,6 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
+@EnableGlobalMethodSecurity(
+        // securedEnabled = true,
+        // jsr250Enabled = true,
+        prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final DaoAuthenticationProvider authProvider;
 
@@ -22,16 +27,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
+                .cors().and().csrf().disable()
 
-            .authorizeRequests()
-            .antMatchers("/admin", "/admin/roles").hasRole("ADMIN")
-            .antMatchers("/resources/create", "/account/details").authenticated()
-            .antMatchers("/register", "/login").not().authenticated()
+                .authorizeRequests()
+                .antMatchers("/admin", "/admin/roles").hasRole("ADMIN")
+                .antMatchers("/resources/create", "/account/details").authenticated()
+                .antMatchers("/register", "/login").not().authenticated().and()
+                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/test/**").permitAll()
+                .anyRequest().permitAll();
 
-            .anyRequest().permitAll()
-
-            .and()
-            .formLogin().loginProcessingUrl("/login");
+                //.and()
+                //.formLogin().loginProcessingUrl("/login");
     }
 }

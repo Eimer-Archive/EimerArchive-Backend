@@ -20,6 +20,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Optional<Account> findByUsernameEqualsIgnoreCase(String username);
 
+    Optional<Account> findByUsernameEquals(String username);
+
     @Modifying
     @Transactional
     @Query("UPDATE Account account SET account.username = ?2 WHERE account.id = ?1")
