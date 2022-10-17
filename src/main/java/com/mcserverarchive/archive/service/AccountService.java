@@ -59,6 +59,16 @@ public class AccountService implements UserDetailsService {
         return this.accountRepository.findByUsernameEquals(username).orElseThrow(() -> new RestException(RestErrorCode.ACCOUNT_NOT_FOUND));
     }
 
+    public boolean hasPermissionToUpload(String token) {
+        if (!this.tokenRepository.existsByToken(token)) {
+            return false;
+        }
+
+        Token tokenObj = this.tokenRepository.findByToken(token).get();
+        Account account = tokenObj.getAccount();
+        return account.getRole().equalsIgnoreCase("ROLE_UPLOAD");
+    }
+
     // todo will there be concurrency issues with performing this all in one update?
     public Account updateAccountDetails(Account account, UpdateAccountRequest request, MultipartFile file) throws RestException {
         if (file != null) {

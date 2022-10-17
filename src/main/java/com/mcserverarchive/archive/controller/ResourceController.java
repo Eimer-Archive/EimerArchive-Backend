@@ -11,6 +11,7 @@ import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.Resource;
 import com.mcserverarchive.archive.repositories.ResourceRepository;
 import com.mcserverarchive.archive.repositories.UpdateRepository;
+import com.mcserverarchive.archive.service.AccountService;
 import com.mcserverarchive.archive.service.ResourceService;
 import com.mcserverarchive.archive.service.ResourceUpdateService;
 import com.querydsl.core.types.Predicate;
@@ -31,6 +32,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class ResourceController {
     private final ResourceService resourceService;
+    private final AccountService accountService;
     private final ResourceUpdateService resourceUpdateService;
     private final ResourceRepository resourceRepository;
     private final UpdateRepository updateRepository;
@@ -43,7 +45,8 @@ public class ResourceController {
     }
 
     @PostMapping
-    public void createResource(@RequestBody String map) throws RestException { // Could use Map<String, Object> instead of String
+    public void createResource(@RequestBody String map, @CookieValue(name = "user-cookie") String ct) throws RestException { // Could use Map<String, Object> instead of String
+        if (!accountService.hasPermissionToUpload(ct)) return;
         CreateResourceRequest request = new Gson().fromJson(map, CreateResourceRequest.class);
         this.resourceService.createResource(request);
     }

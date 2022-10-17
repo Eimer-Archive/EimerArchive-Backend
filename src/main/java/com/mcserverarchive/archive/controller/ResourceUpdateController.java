@@ -6,13 +6,14 @@ import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateUpdateRequest;
 import com.mcserverarchive.archive.service.ResourceUpdateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RestController
 @RequestMapping("/file")
@@ -21,7 +22,7 @@ public class ResourceUpdateController {
     private final ResourceUpdateService resourceUpdateService;
 
     @PostMapping("/upload")
-    public void createUpdate(@RequestParam("file") MultipartFile file, @RequestPart("data") String data) throws RestException, IOException {
+    public void createUpdate(@CookieValue(name = "user-cookie") String token, @RequestParam("file") MultipartFile file, @RequestPart("data") String data) throws RestException {
 //        Path resourcePath = Path.of("C:\\Users\\prest\\Downloads\\txt.txt");
 //        try (InputStream inputStream = file.getInputStream()) {
 //            Files.copy(inputStream, resourcePath);
@@ -29,6 +30,20 @@ public class ResourceUpdateController {
 //            e.printStackTrace();
 //        }
         this.resourceUpdateService.createUpdate(file, new Gson().fromJson(data, CreateUpdateRequest.class));
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurerFile() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/file/upload/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedOriginPatterns("http://localhost:3000")
+                        .allowCredentials(true)
+                        .allowedMethods("GET", "POST");
+            }
+        };
     }
 
     @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

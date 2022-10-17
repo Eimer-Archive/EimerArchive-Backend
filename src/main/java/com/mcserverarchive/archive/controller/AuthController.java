@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -53,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("api/auth/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response, @CookieValue(name = "user-cookie", required = false) String ct) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, @CookieValue(name = "user-cookie", required = false) String ct) {
 
         try {
             Account account = accountService.getAccountByUsername(loginRequest.getUsername());
@@ -61,8 +60,7 @@ public class AuthController {
             Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusMinutes(1), "0.0.0.0", account);
             accountService.createToken(token);
 
-            // TODO: try add the path to /auth/api or something
-            ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).httpOnly(true).maxAge(60000).build();
+            ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").httpOnly(true).maxAge(60000).build();
 
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
         } catch (Exception e) {
@@ -99,8 +97,6 @@ public class AuthController {
 
     @GetMapping("api/auth/info")
     public ResponseEntity<?> getAccountInfoFromToken(@CookieValue(name = "user-cookie") String ct) {
-
-        System.out.println(ct);
 
         Optional<Token> optionalToken = tokenRepository.findByToken(ct);
         if (optionalToken.isEmpty()) return ResponseEntity.ok().body("Invalid token");
