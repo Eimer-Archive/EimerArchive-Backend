@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -12,16 +13,20 @@ import java.util.List;
 @Table(name = "files")
 public class File {
 
-    public File(String description, String filename, String version, String name,
-                List<String> versions, List<String> software, Resource resource) {
+    public File(String description, String filename, String version, String name, List<String> versions, List<String> software, Resource resource) {
         this.downloads = 0;
         this.description = description;
         this.filename = filename;
         this.version = version;
         this.name = name;
-        this.versions = versions;
         this.software = software;
         this.resource = resource;
+
+        List<EVersions> versionsList = new ArrayList<>();
+        for (String s : versions) {
+            versionsList.add(EVersions.valueOf(s.toUpperCase()));
+        }
+        this.versions = versionsList;
     }
 
     @Id
@@ -42,7 +47,7 @@ public class File {
 
     // Minecraft Versions
     @ElementCollection
-    private List<String> versions;
+    private List<EVersions> versions;
 
     // File version/build number
     @Column(nullable = false)

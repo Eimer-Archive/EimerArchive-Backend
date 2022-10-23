@@ -14,7 +14,7 @@ import java.util.List;
 public class Resource {
 
     public Resource(String name, String description, String blurb, String source,
-                    String author, String category) {
+                    String author, ECategory category) {
         this.name = name;
         this.description = description;
         this.blurb = blurb;
@@ -43,7 +43,7 @@ public class Resource {
     private String author;
 
     @Column(nullable = false)
-    private String category;
+    private ECategory category;
 
     @Lob
     private byte[] logo;

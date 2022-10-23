@@ -6,6 +6,7 @@ import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
 import com.mcserverarchive.archive.model.Account;
+import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.Resource;
 import com.mcserverarchive.archive.repositories.ResourceRepository;
 import com.mcserverarchive.archive.repositories.UpdateRepository;
@@ -28,16 +29,24 @@ public class ResourceService {
 
     public Page<SimpleResourceDto> searchResources(Pageable pageable, Predicate query) {
         return this.resourceRepository.findAll(query, pageable)
-            .map(resource -> {
-                int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
-                return SimpleResourceDto.create(resource, totalDownloads);
-            });
+                .map(resource -> {
+                    int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
+                    return SimpleResourceDto.create(resource, totalDownloads);
+                });
+    }
+
+    public Page<SimpleResourceDto> searchResources(ECategory category, Pageable pageable, Predicate query) {
+        return this.resourceRepository.findAllByCategory(category, pageable)
+                .map(resource -> {
+                    int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
+                    return SimpleResourceDto.create(resource, totalDownloads);
+                });
     }
 
     public Resource getResource(int resourceId) {
         Optional<Resource> resource = this.resourceRepository.findById(resourceId);
 
-        if(resource.isEmpty()) return null;
+        if (resource.isEmpty()) return null;
 
         resource.get().setAuthor(null);
         return resource.get();
@@ -52,7 +61,7 @@ public class ResourceService {
 
         Resource resource = new Resource(request.getName(), request.getDescription(),
                 request.getBlurb(), request.getSource(),
-                request.getAuthor(), request.getCategory());
+                request.getAuthor(), ECategory.valueOf(request.getCategory().toUpperCase()));
 
         return this.resourceRepository.save(resource);
     }
@@ -77,15 +86,17 @@ public class ResourceService {
 
         String category = request.getCategory();
         if (category != null && !category.isEmpty())
-            resource.setCategory(category);
+            resource.setCategory(ECategory.valueOf(category.toUpperCase()));
 
         String source = request.getSource();
         if (source != null && !source.isEmpty())
             resource.setSource(source);
 
         if (file != null && !file.isEmpty()) {
-            if (file.getSize() > this.siteConfig.getMaxUploadSize().toBytes()) throw new RestException(RestErrorCode.FILE_TOO_LARGE);
-            if (file.getContentType() == null || !file.getContentType().contains("image")) throw new RestException(RestErrorCode.WRONG_FILE_TYPE);
+            if (file.getSize() > this.siteConfig.getMaxUploadSize().toBytes())
+                throw new RestException(RestErrorCode.FILE_TOO_LARGE);
+            if (file.getContentType() == null || !file.getContentType().contains("image"))
+                throw new RestException(RestErrorCode.WRONG_FILE_TYPE);
 
             resource.setLogo(ImageUtil.handleImage(file));
         }

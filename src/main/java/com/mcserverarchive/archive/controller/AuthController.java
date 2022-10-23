@@ -106,7 +106,7 @@ public class AuthController {
         return ResponseEntity.ok(new UsernameDto(token.getAccount().getUsername(), token.getAccount().getId()));
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/api/auth/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (accountRepository.existsByUsernameEqualsIgnoreCase(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));

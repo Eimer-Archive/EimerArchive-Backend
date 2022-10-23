@@ -29,6 +29,7 @@ public class ResourceUpdateController {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+        System.out.println(data);
         this.resourceUpdateService.createUpdate(file, new Gson().fromJson(data, CreateUpdateRequest.class));
     }
 

@@ -66,7 +66,7 @@ public class AccountService implements UserDetailsService {
 
         Token tokenObj = this.tokenRepository.findByToken(token).get();
         Account account = tokenObj.getAccount();
-        return account.getRole().equalsIgnoreCase("ROLE_UPLOAD");
+        return account.getRole().equalsIgnoreCase("ROLE_UPLOAD") || account.getRole().equalsIgnoreCase("ROLE_ADMIN");
     }
 
     // todo will there be concurrency issues with performing this all in one update?

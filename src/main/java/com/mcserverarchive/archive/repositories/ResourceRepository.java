@@ -1,7 +1,10 @@
 package com.mcserverarchive.archive.repositories;
 
+import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.QResource;
 import com.mcserverarchive.archive.model.Resource;
+import com.querydsl.core.types.Predicate;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -42,7 +45,7 @@ public interface ResourceRepository extends JpaRepository<Resource, Integer>, Qu
 
     List<Resource> findAllByAuthor(String author, Pageable pageable);
 
-    List<Resource> findAllByCategoryEquals(String category, Pageable pageable);
+    Page<Resource> findAllByCategory(ECategory category, Pageable pageable);
 
     Optional<Resource> findByNameEqualsIgnoreCase(String name);
 

@@ -1,5 +1,6 @@
 package com.mcserverarchive.archive.dtos.out;
 
+import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.File;
 import com.mcserverarchive.archive.model.Resource;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class ResourceDto {
     private final String description;
     private final String blurb;
     private final String source;
-    private final String category;
+    private final ECategory category;
     private final byte[] logo;
     private final String account;
 
