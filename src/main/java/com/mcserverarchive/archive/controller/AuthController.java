@@ -31,7 +31,7 @@ import java.util.Set;
 
 //@CrossOrigin(origins= {"*"}, maxAge = 4800, allowCredentials = "false" )
 @RestController()
-//@RequestMapping("/api/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -43,7 +43,7 @@ public class AuthController {
     @Autowired
     RoleRepository roleRepository;
 
-    @PostMapping("api/auth/signout")
+    @PostMapping("signout")
     public ResponseEntity<?> logoutUser(@CookieValue(name = "user-cookie") String ct) {
 
         ResponseCookie cookie = ResponseCookie.from("user-cookie", "").httpOnly(true).maxAge(0).build();
@@ -51,7 +51,7 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("You've been signed out!"));
     }
 
-    @PostMapping("api/auth/signin")
+    @PostMapping("signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, @CookieValue(name = "user-cookie", required = false) String ct) {
 
         try {
@@ -67,35 +67,8 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Invalid username or password"));
         }
     }
-//
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-//        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-//        corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000")); // also tried *
-//        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT", "OPTIONS", "PATCH", "DELETE"));
-//        corsConfiguration.setAllowCredentials(true);
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/api/auth/**", corsConfiguration);
-//        return source;
-//    }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer2() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/auth/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedOriginPatterns("http://localhost:3000")
-                        .allowCredentials(true)
-                        .allowedMethods("GET", "POST");
-            }
-        };
-    }
-
-    @GetMapping("api/auth/info")
+    @GetMapping("info")
     public ResponseEntity<?> getAccountInfoFromToken(@CookieValue(name = "user-cookie") String ct) {
 
         Optional<Token> optionalToken = tokenRepository.findByToken(ct);
@@ -106,7 +79,7 @@ public class AuthController {
         return ResponseEntity.ok(new UsernameDto(token.getAccount().getUsername(), token.getAccount().getId()));
     }
 
-    @PostMapping("/api/auth/signup")
+    @PostMapping("signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (accountRepository.existsByUsernameEqualsIgnoreCase(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
@@ -154,5 +127,19 @@ public class AuthController {
         accountRepository.save(account);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/auth/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedOriginPatterns("http://localhost:3000")
+                        .allowCredentials(true)
+                        .allowedMethods("GET", "POST");
+            }
+        };
     }
 }

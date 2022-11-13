@@ -68,7 +68,7 @@ public class ResourceService {
 
     // TODO: More sanity checks
     // todo: also this is horrible, can we just use querydsl?
-    public Resource updateResource(Account account, int resourceId, MultipartFile file, CreateResourceRequest request) throws RestException {
+    public Resource updateResource(int resourceId, MultipartFile file, CreateResourceRequest request) throws RestException {
         Resource resource = this.resourceRepository.findById(resourceId).orElseThrow(() -> new RestException(RestErrorCode.RESOURCE_NOT_FOUND));
         //if (resource.getAuthor().getId() != account.getId()) throw new RestException(RestErrorCode.FORBIDDEN);
 

@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/archive")
+@RequestMapping("/api/archive")
 @RequiredArgsConstructor
 public class ResourceController {
     private final ResourceService resourceService;
@@ -63,9 +63,9 @@ public class ResourceController {
         return this.resourceService.searchResources(ECategory.SOFTWARE, pageable, predicate);
     }
 
-    @PostMapping("/api/create")
-    public void createResource(@RequestBody String map, @CookieValue(name = "user-cookie") String ct) throws RestException { // Could use Map<String, Object> instead of String
-        if (!accountService.hasPermissionToUpload(ct)) {
+    @PostMapping("/create")
+    public void createResource(@RequestBody String map, @RequestHeader("authorization") String token) throws RestException { // Could use Map<String, Object> instead of String
+        if (!accountService.hasPermissionToUpload(token)) {
             return;
         }
         CreateResourceRequest request = new Gson().fromJson(map, CreateResourceRequest.class);
@@ -73,8 +73,8 @@ public class ResourceController {
     }
 
     @PostMapping("/{resourceId}/edit")
-    public void updateResourceInfo(Account account, @PathVariable int resourceId, @RequestParam(value = "file", required = false) MultipartFile file, CreateResourceRequest request) throws RestException {
-        this.resourceService.updateResource(account, resourceId, file, request);
+    public void updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestParam(value = "file", required = false) MultipartFile file, CreateResourceRequest request) throws RestException {
+        this.resourceService.updateResource(resourceId, file, request);
     }
 
     @GetMapping("/{resourceId}")
@@ -99,25 +99,11 @@ public class ResourceController {
     }
 
     @Bean
-    public WebMvcConfigurer corsResourceAUth() {
+    public WebMvcConfigurer resourceCorsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/archive/api/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedOriginPatterns("http://localhost:3000")
-                        .allowCredentials(true)
-                        .allowedMethods("GET", "POST");
-            }
-        };
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
+                registry.addMapping("api/archive/**")
                         .allowedOrigins("*")
                         .allowedMethods("GET", "POST");
             }
