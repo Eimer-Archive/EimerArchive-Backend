@@ -25,6 +25,6 @@ public class InfoController {
 
         Token token1 = optionalToken.get();
 
-        return ResponseEntity.ok(new UsernameDto(token1.getAccount().getUsername(), token1.getAccount().getId()));
+        return ResponseEntity.ok(new UsernameDto(token1.getAccount().getUsername(), token1.getAccount().getRole(), token1.getAccount().getId()));
     }
 }

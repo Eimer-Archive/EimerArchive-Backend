@@ -95,4 +95,13 @@ public enum EVersions {
     EVersions(String version) {
         this.version = version;
     }
+
+    public static EVersions fromString(String version) {
+        for (EVersions v : EVersions.values()) {
+            if (v.version.equals(version)) {
+                return v;
+            }
+        }
+        return null;
+    }
 }

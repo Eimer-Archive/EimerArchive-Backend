@@ -15,7 +15,7 @@ public class CreateUpdateRequest {
     private String name;
     private String version;
     private String description;
-    private List<String> versions;
+    private List<Test[]> versions;
     private List<String> software;
 
     public boolean isMissingRequirements() {

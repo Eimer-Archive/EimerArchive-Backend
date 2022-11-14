@@ -1,5 +1,6 @@
 package com.mcserverarchive.archive.model;
 
+import com.mcserverarchive.archive.dtos.in.Test;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,21 +14,21 @@ import java.util.List;
 @Table(name = "files")
 public class File {
 
-    public File(String description, String filename, String version, String name, List<String> versions, List<String> software, Resource resource) {
-        this.downloads = 0;
-        this.description = description;
-        this.filename = filename;
-        this.version = version;
-        this.name = name;
-        this.software = software;
-        this.resource = resource;
-
-        List<EVersions> versionsList = new ArrayList<>();
-        for (String s : versions) {
-            versionsList.add(EVersions.valueOf(s.toUpperCase()));
-        }
-        this.versions = versionsList;
-    }
+//    public File(String description, String filename, String version, String name, List<Test[]> versions, List<String> software, Resource resource) {
+//        this.downloads = 0;
+//        this.description = description;
+//        this.filename = filename;
+//        this.version = version;
+//        this.name = name;
+//        this.software = software;
+//        this.resource = resource;
+//
+//        List<EVersions> versionsList = new ArrayList<>();
+//        for (String s : versions) {
+//            versionsList.add(EVersions.valueOf(s.toUpperCase()));
+//        }
+//        this.versions = versionsList;
+//    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,5 +65,23 @@ public class File {
 
     public File() {
 
+    }
+
+    public File(String description, String originalFilename, String version, String name, List<Test[]> versions, List<String> software, Resource resource) {
+        this.downloads = 0;
+        this.description = description;
+        this.filename = originalFilename;
+        this.version = version;
+        this.name = name;
+        this.software = software;
+        this.resource = resource;
+
+        List<EVersions> versionsList = new ArrayList<>();
+        for (Test[] test : versions) {
+            for (Test t : test) {
+                versionsList.add(EVersions.fromString(t.name.toUpperCase()));
+            }
+        }
+        this.versions = versionsList;
     }
 }
