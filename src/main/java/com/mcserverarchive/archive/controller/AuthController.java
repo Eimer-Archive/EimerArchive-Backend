@@ -40,13 +40,14 @@ public class AuthController {
 
     private final AccountRepository accountRepository;
 
-    @Autowired
-    RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @PostMapping("signout")
     public ResponseEntity<?> logoutUser(@CookieValue(name = "user-cookie") String ct) {
 
-        ResponseCookie cookie = ResponseCookie.from("user-cookie", "").httpOnly(true).maxAge(0).build();
+        System.out.println("Logging out user with token: " + ct);
+
+        ResponseCookie cookie = ResponseCookie.from("user-cookie", "").path("/").httpOnly(false).maxAge(0).sameSite("None").secure(true).build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("You've been signed out!"));
     }
@@ -60,23 +61,12 @@ public class AuthController {
             Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusMinutes(1), "0.0.0.0", account);
             accountService.createToken(token);
 
-            ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").httpOnly(true).maxAge(60000).build();
+            ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").httpOnly(false).maxAge(60000).build();
 
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Invalid username or password"));
         }
-    }
-
-    @GetMapping("info")
-    public ResponseEntity<?> getAccountInfoFromToken(@CookieValue(name = "user-cookie") String ct) {
-
-        Optional<Token> optionalToken = tokenRepository.findByToken(ct);
-        if (optionalToken.isEmpty()) return ResponseEntity.ok().body("Invalid token");
-
-        Token token = optionalToken.get();
-
-        return ResponseEntity.ok(new UsernameDto(token.getAccount().getUsername(), token.getAccount().getId()));
     }
 
     @PostMapping("signup")
