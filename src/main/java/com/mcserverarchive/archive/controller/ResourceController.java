@@ -5,12 +5,9 @@ import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceRequest;
-import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
-import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.dtos.out.ResourceDto;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
 import com.mcserverarchive.archive.dtos.out.VersionsDto;
-import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.EVersions;
 import com.mcserverarchive.archive.model.Resource;
@@ -29,13 +26,10 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/archive")
@@ -103,6 +97,11 @@ public class ResourceController {
     @GetMapping("versions")
     public VersionsDto getVersions() {
         return VersionsDto.create(Arrays.stream(EVersions.values()).map(e -> e.version).toList());
+    }
+
+    @GetMapping("categories")
+    public ECategory[] getCategories() {
+        return ECategory.values();
     }
 
     @Bean

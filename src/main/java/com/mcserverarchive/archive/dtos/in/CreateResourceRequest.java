@@ -13,6 +13,12 @@ public class CreateResourceRequest {
     private String blurb;
     private String source;
     private String description;
-    private String category;
     private String author;
+    private Category category;
+
+    @Getter
+    @Setter
+    public class Category {
+        private String name;
+    }
 }

@@ -63,7 +63,7 @@ public class ResourceService {
 
         Resource resource = new Resource(request.getName(), request.getDescription(),
                 request.getBlurb(), request.getSource(),
-                request.getAuthor(), ECategory.valueOf(request.getCategory().toUpperCase()));
+                request.getAuthor(), ECategory.valueOf(request.getCategory().getName().toUpperCase()));
 
         return this.resourceRepository.save(resource);
     }
