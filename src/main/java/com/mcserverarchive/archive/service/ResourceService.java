@@ -4,6 +4,7 @@ import com.mcserverarchive.archive.config.custom.SiteConfig;
 import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
+import com.mcserverarchive.archive.dtos.in.resource.EditResourceRequest;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
 import com.mcserverarchive.archive.model.Account;
@@ -69,7 +70,7 @@ public class ResourceService {
 
     // TODO: More sanity checks
     // todo: also this is horrible, can we just use querydsl?
-    public Resource updateResource(int resourceId, EditResourceUpdateRequest request) throws RestException {
+    public Resource updateResource(int resourceId, EditResourceRequest request) throws RestException {
         Resource resource = this.resourceRepository.findById(resourceId).orElseThrow(() -> new RestException(RestErrorCode.RESOURCE_NOT_FOUND));
 
         String name = request.getName();

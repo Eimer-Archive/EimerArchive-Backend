@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EditResourceUpdateRequest {
+public class EditResourceRequest {
     private String name;
-    private String version;
+    private String blurb;
     private String description;
 }

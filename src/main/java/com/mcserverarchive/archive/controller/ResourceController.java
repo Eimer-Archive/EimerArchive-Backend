@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
+import com.mcserverarchive.archive.dtos.in.resource.EditResourceRequest;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.dtos.out.ResourceDto;
@@ -74,7 +75,7 @@ public class ResourceController {
     }
 
     @PostMapping("/{resourceId}/edit")
-    public void updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestBody EditResourceUpdateRequest request) throws RestException {
+    public void updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestBody EditResourceRequest request) throws RestException {
 
         if (!this.accountService.hasPermissionToUpload(token)) {
             return;
