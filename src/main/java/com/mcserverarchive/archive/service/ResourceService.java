@@ -4,6 +4,7 @@ import com.mcserverarchive.archive.config.custom.SiteConfig;
 import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
+import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
 import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.ECategory;
@@ -68,9 +69,8 @@ public class ResourceService {
 
     // TODO: More sanity checks
     // todo: also this is horrible, can we just use querydsl?
-    public Resource updateResource(int resourceId, MultipartFile file, CreateResourceRequest request) throws RestException {
+    public Resource updateResource(int resourceId, EditResourceUpdateRequest request) throws RestException {
         Resource resource = this.resourceRepository.findById(resourceId).orElseThrow(() -> new RestException(RestErrorCode.RESOURCE_NOT_FOUND));
-        //if (resource.getAuthor().getId() != account.getId()) throw new RestException(RestErrorCode.FORBIDDEN);
 
         String name = request.getName();
         if (name != null && !name.isEmpty())
@@ -83,23 +83,6 @@ public class ResourceService {
         String blurb = request.getBlurb();
         if (blurb != null && !blurb.isEmpty())
             resource.setBlurb(blurb);
-
-        String category = request.getCategory();
-        if (category != null && !category.isEmpty())
-            resource.setCategory(ECategory.valueOf(category.toUpperCase()));
-
-        String source = request.getSource();
-        if (source != null && !source.isEmpty())
-            resource.setSource(source);
-
-        if (file != null && !file.isEmpty()) {
-            if (file.getSize() > this.siteConfig.getMaxUploadSize().toBytes())
-                throw new RestException(RestErrorCode.FILE_TOO_LARGE);
-            if (file.getContentType() == null || !file.getContentType().contains("image"))
-                throw new RestException(RestErrorCode.WRONG_FILE_TYPE);
-
-            resource.setLogo(ImageUtil.handleImage(file));
-        }
 
         return this.resourceRepository.save(resource);
     }

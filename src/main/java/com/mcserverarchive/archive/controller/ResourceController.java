@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
+import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.dtos.out.ResourceDto;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
@@ -73,8 +74,13 @@ public class ResourceController {
     }
 
     @PostMapping("/{resourceId}/edit")
-    public void updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestParam(value = "file", required = false) MultipartFile file, CreateResourceRequest request) throws RestException {
-        this.resourceService.updateResource(resourceId, file, request);
+    public void updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestBody EditResourceUpdateRequest request) throws RestException {
+
+        if (!this.accountService.hasPermissionToUpload(token)) {
+            return;
+        }
+
+        this.resourceService.updateResource(resourceId, request);
     }
 
     @GetMapping("/{resourceId}")
