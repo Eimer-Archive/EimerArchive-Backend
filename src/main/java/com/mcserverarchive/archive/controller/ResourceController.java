@@ -85,13 +85,13 @@ public class ResourceController {
     }
 
     @GetMapping("/{resourceId}")
-    public Object getResource(@PathVariable int resourceId) {
+    public ResponseEntity<?> getResource(@PathVariable int resourceId) {
         Resource resource = this.resourceService.getResource(resourceId);
-        if(resource == null) return ErrorDto.create(404, "This resource does not exist :(");
+        if(resource == null) return ResponseEntity.notFound().build();
 
         int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
 
-        return ResourceDto.create(resource, totalDownloads);
+        return ResponseEntity.ok(ResourceDto.create(resource, totalDownloads));
     }
 
     // TODO: properly delete
