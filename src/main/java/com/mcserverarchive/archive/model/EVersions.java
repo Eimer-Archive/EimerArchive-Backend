@@ -1,5 +1,8 @@
 package com.mcserverarchive.archive.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum EVersions {
     V1_19_2("1.19.2"),
     V1_19_1("1.19.1"),
@@ -103,5 +106,14 @@ public enum EVersions {
             }
         }
         return null;
+    }
+
+    // Switch the enum to its string value list
+    public static List<String> toStringArray(List<EVersions> list) {
+        List<String> stringList = new ArrayList<>();
+        for (EVersions v : list) {
+            stringList.add(v.version);
+        }
+        return stringList;
     }
 }
