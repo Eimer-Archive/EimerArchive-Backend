@@ -29,10 +29,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors().and().csrf().disable()
 
-                .authorizeRequests()
-                .antMatchers("/admin", "/admin/roles").hasRole("ADMIN")
-                .antMatchers("/resources/create", "/account/details").authenticated()
-                .antMatchers("/register", "/login").not().authenticated().and()
+                .authorizeRequests().and()
+                //.antMatchers("/admin", "/admin/roles").hasRole("ADMIN")
+                //.antMatchers("/resources/create", "/account/details").authenticated()
+                //.antMatchers("/register", "/login").not().authenticated().and()
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .anyRequest().permitAll();
 

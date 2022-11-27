@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -42,6 +44,8 @@ public class AuthController {
 
     private final RoleRepository roleRepository;
 
+    private final PasswordEncoder encoder;
+
     @PostMapping("signout")
     public ResponseEntity<?> logoutUser(@CookieValue(name = "user-cookie") String ct) {
 
@@ -57,6 +61,10 @@ public class AuthController {
 
         try {
             Account account = accountService.getAccountByUsername(loginRequest.getUsername());
+
+            if (!BCrypt.checkpw(loginRequest.getPassword(), account.getPassword())) {
+                return ResponseEntity.ok().body("{\"error\": \"Incorrect password\"}");
+            }
 
             Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusMinutes(1), "0.0.0.0", account);
             accountService.createToken(token);
@@ -82,7 +90,7 @@ public class AuthController {
         // Create new user's account
         Account account = new Account(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
-                signUpRequest.getPassword());
+                encoder.encode(signUpRequest.getPassword()));
 
         Set<String> strRoles = new HashSet<>(Collections.singletonList("USER"));
         Set<Role> roles = new HashSet<>();
