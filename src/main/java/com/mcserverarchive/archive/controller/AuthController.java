@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-//@CrossOrigin(origins= {"*"}, maxAge = 4800, allowCredentials = "false" )
 @RestController()
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

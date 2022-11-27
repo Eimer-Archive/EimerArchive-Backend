@@ -26,17 +26,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
-                .cors().and().csrf().disable()
-
-                .authorizeRequests().and()
-                //.antMatchers("/admin", "/admin/roles").hasRole("ADMIN")
-                //.antMatchers("/resources/create", "/account/details").authenticated()
-                //.antMatchers("/register", "/login").not().authenticated().and()
-                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .anyRequest().permitAll();
-
-                //.and()
-                //.formLogin().loginProcessingUrl("/login");
+        http.authorizeRequests().antMatchers("/**").permitAll().anyRequest().authenticated().and().cors().and().csrf().disable();
     }
 }
