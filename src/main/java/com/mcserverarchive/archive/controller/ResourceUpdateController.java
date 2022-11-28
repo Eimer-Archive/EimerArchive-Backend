@@ -49,7 +49,7 @@ public class ResourceUpdateController {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("api/file/**")
+                registry.addMapping("/api/file/**")
                         .allowedOrigins("*")
                         .allowedMethods("GET", "POST");
             }
