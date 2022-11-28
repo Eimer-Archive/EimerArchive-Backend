@@ -69,13 +69,17 @@ public class ResourceController {
     }
 
     @PostMapping("/{resourceId}/edit")
-    public void updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestBody EditResourceRequest request) throws RestException {
+    public ResponseEntity<?> updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestBody EditResourceRequest request) throws RestException {
 
         if (!this.accountService.hasPermissionToUpload(token)) {
-            return;
+            return ResponseEntity.status(403).build();
         }
 
+        System.out.println("blurb: " + request.getBlurb());
+
         this.resourceService.updateResource(resourceId, request);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{resourceId}")
@@ -109,7 +113,7 @@ public class ResourceController {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("api/archive/**")
+                registry.addMapping("/api/archive/**")
                         .allowedOrigins("*")
                         .allowedMethods("GET", "POST");
             }
