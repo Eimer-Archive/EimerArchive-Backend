@@ -59,7 +59,7 @@ public interface ResourceRepository extends JpaRepository<Resource, Integer>, Qu
 
     @Modifying
     @Transactional
-    @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.blurb = ?4, resource.description = ?5 WHERE resource.id = ?1")
-    void updateResource(int id, byte[] logo, String name, String blurb, String description);
+    @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.blurb = ?4, resource.description = ?5, resource.source = ?6 WHERE resource.id = ?1")
+    void updateResource(int id, byte[] logo, String name, String blurb, String description, String source);
 
 }

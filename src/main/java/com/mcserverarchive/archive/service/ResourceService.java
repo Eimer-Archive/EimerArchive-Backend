@@ -70,7 +70,7 @@ public class ResourceService {
 
     public boolean updateResource(int resourceId, EditResourceRequest request) {
 
-        resourceRepository.updateResource(resourceId, null, request.getName(), request.getBlurb(), request.getDescription());
+        resourceRepository.updateResource(resourceId, null, request.getName(), request.getBlurb(), request.getDescription(), request.getSource());
 
         return true;
     }

@@ -8,5 +8,6 @@ import lombok.Setter;
 public class EditResourceRequest {
     private String name;
     private String blurb;
+    private String source;
     private String description;
 }
