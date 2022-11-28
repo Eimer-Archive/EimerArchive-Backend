@@ -68,23 +68,10 @@ public class ResourceService {
         return this.resourceRepository.save(resource);
     }
 
-    // TODO: More sanity checks
-    // todo: also this is horrible, can we just use querydsl?
-    public Resource updateResource(int resourceId, EditResourceRequest request) throws RestException {
-        Resource resource = this.resourceRepository.findById(resourceId).orElseThrow(() -> new RestException(RestErrorCode.RESOURCE_NOT_FOUND));
+    public boolean updateResource(int resourceId, EditResourceRequest request) {
 
-        String name = request.getName();
-        if (name != null && !name.isEmpty())
-            resource.setName(name);
+        resourceRepository.updateResource(resourceId, null, request.getName(), request.getBlurb(), request.getDescription());
 
-        String description = request.getDescription();
-        if (description != null && !description.isEmpty())
-            resource.setDescription(description);
-
-        String blurb = request.getBlurb();
-        if (blurb != null && !blurb.isEmpty())
-            resource.setBlurb(blurb);
-
-        return this.resourceRepository.save(resource);
+        return true;
     }
 }
