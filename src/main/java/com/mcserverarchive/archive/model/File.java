@@ -79,13 +79,10 @@ public class File {
         List<EVersions> versionsList = new ArrayList<>();
         for (Test[] test : versions) {
             for (Test t : test) {
-                System.out.println(t.name);
-                System.out.println(EVersions.fromString(t.name));
                 versionsList.add(EVersions.fromString(t.name));
             }
         }
 
-        System.out.println(versionsList);
         this.versions = versionsList;
     }
 }

@@ -75,8 +75,6 @@ public class ResourceController {
             return ResponseEntity.status(403).build();
         }
 
-        System.out.println("blurb: " + request.getBlurb());
-
         this.resourceService.updateResource(resourceId, request);
 
         return ResponseEntity.ok().build();
