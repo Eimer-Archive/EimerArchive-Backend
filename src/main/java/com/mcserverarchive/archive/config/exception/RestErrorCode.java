@@ -27,7 +27,8 @@ public enum RestErrorCode {
 
     TOO_MANY_RESOURCE_CREATIONS(HttpStatus.TOO_MANY_REQUESTS, "resource", 1),
     TOO_MANY_RESOURCE_UPDATES(HttpStatus.TOO_MANY_REQUESTS, "resource", 2),
-    RESOURCE_NAME_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "resource", 3);
+    RESOURCE_NAME_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "resource", 3),
+    RESOURCE_SLUG_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "resource", 4);
 
     private final HttpStatus httpStatus;
     private final String module;

@@ -67,4 +67,6 @@ public interface ResourceRepository extends JpaRepository<Resource, Integer>, Qu
     void updateResourceBySlug(String slug, byte[] logo, String name, String newSlug, String blurb, String description, String source);
 
     Optional<Resource> findBySlugEqualsIgnoreCase(String slug);
+
+    boolean existsBySlugEqualsIgnoreCase(String slug);
 }

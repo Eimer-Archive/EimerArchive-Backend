@@ -66,6 +66,9 @@ public class ResourceService {
         if (request.getName().isEmpty() || request.getBlurb().isEmpty() || request.getDescription().isEmpty())
             throw new RestException(RestErrorCode.REQUIRED_ARGUMENTS_MISSING);
 
+        if (this.resourceRepository.existsBySlugEqualsIgnoreCase(request.getSlug()))
+            throw new RestException(RestErrorCode.RESOURCE_SLUG_NOT_AVAILABLE);
+
         Resource resource = new Resource(request.getName(), request.getSlug(), request.getDescription(),
                 request.getBlurb(), request.getSource(),
                 request.getAuthor(), ECategory.valueOf(request.getCategory().getName().toUpperCase()));
