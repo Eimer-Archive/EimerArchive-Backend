@@ -10,6 +10,7 @@ import lombok.Setter;
 public class CreateResourceRequest {
 
     private String name;
+    private String slug;
     private String blurb;
     private String source;
     private String description;

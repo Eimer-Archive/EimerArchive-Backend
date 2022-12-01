@@ -70,7 +70,7 @@ public class ResourceService {
         if (request.getName().isEmpty() || request.getBlurb().isEmpty() || request.getDescription().isEmpty())
             throw new RestException(RestErrorCode.REQUIRED_ARGUMENTS_MISSING);
 
-        Resource resource = new Resource(request.getName(), request.getDescription(),
+        Resource resource = new Resource(request.getName(), request.getSlug(), request.getDescription(),
                 request.getBlurb(), request.getSource(),
                 request.getAuthor(), ECategory.valueOf(request.getCategory().getName().toUpperCase()));
 

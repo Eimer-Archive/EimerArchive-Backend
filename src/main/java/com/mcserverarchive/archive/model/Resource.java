@@ -13,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Resource {
 
-    public Resource(String name, String description, String blurb, String source,
-                    String author, ECategory category) {
+    public Resource(String name, String slug, String description, String blurb, String source, String author, ECategory category) {
         this.name = name;
+        this.slug = slug;
         this.description = description;
         this.blurb = blurb;
         this.source = source;
