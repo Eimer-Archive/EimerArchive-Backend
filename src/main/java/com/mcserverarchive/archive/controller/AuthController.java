@@ -1,6 +1,5 @@
 package com.mcserverarchive.archive.controller;
 
-import com.mcserverarchive.archive.dtos.out.UsernameDto;
 import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.ERole;
 import com.mcserverarchive.archive.model.Role;
@@ -13,7 +12,6 @@ import com.mcserverarchive.archive.repositories.RoleRepository;
 import com.mcserverarchive.archive.repositories.TokenRepository;
 import com.mcserverarchive.archive.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -28,7 +26,6 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController()
@@ -47,8 +44,6 @@ public class AuthController {
 
     @PostMapping("signout")
     public ResponseEntity<?> logoutUser(@CookieValue(name = "user-cookie") String ct) {
-
-        System.out.println("Logging out user with token: " + ct);
 
         ResponseCookie cookie = ResponseCookie.from("user-cookie", "").path("/").httpOnly(false).maxAge(0).sameSite("None").secure(true).build();
 
