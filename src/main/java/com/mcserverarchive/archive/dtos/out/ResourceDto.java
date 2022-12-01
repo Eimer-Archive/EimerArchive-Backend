@@ -15,10 +15,7 @@ public class ResourceDto {
 
     private int id;
     private final int totalDownloads;
-    private final String name;
-    private final String description;
-    private final String blurb;
-    private final String source;
+    private final String slug, name, description, blurb, source;
     private final ECategory category;
     private final byte[] logo;
     private final String account;
@@ -26,7 +23,7 @@ public class ResourceDto {
     private final List<UpdateDto> updates;
 
     public static ResourceDto create(Resource resource, int totalDownloads) {
-        return new ResourceDto(resource.getId(), totalDownloads, resource.getName(), resource.getDescription(),
+        return new ResourceDto(resource.getId(), totalDownloads, resource.getSlug(), resource.getName(), resource.getDescription(),
                 resource.getBlurb(), resource.getSource(), resource.getCategory(), resource.getLogo(),
                 "test", getFiles(resource.getFiles()));
     }

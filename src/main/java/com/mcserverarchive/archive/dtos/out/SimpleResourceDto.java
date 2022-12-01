@@ -13,8 +13,7 @@ import java.util.List;
 public class SimpleResourceDto {
 
     private int id;
-    private final String name;
-    private final String blurb;
+    private final String slug, name, blurb;
 
     private final int totalDownloads;
     private final byte[] logo;
@@ -22,7 +21,7 @@ public class SimpleResourceDto {
     private final List<UpdateDto> updates;
 
     public static SimpleResourceDto create(Resource resource, int totalDownloads) {
-        return new SimpleResourceDto(resource.getId(), resource.getName(), resource.getBlurb(), totalDownloads, resource.getLogo(),
+        return new SimpleResourceDto(resource.getId(), resource.getSlug(), resource.getName(), resource.getBlurb(), totalDownloads, resource.getLogo(),
                 getUpdates(resource.getFiles()));
     }
 

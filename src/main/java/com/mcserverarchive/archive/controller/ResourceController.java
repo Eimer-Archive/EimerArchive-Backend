@@ -80,9 +80,31 @@ public class ResourceController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/slug/{slug}/edit")
+    public ResponseEntity<?> updateResourceInfoSlug(@RequestHeader("authorization") String token, @PathVariable String slug, @RequestBody EditResourceRequest request) throws RestException {
+
+        if (!this.accountService.hasPermissionToUpload(token)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        this.resourceService.updateResource(slug, request);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{resourceId}")
     public ResponseEntity<?> getResource(@PathVariable int resourceId) {
         Resource resource = this.resourceService.getResource(resourceId);
+        if(resource == null) return ResponseEntity.notFound().build();
+
+        int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
+
+        return ResponseEntity.ok(ResourceDto.create(resource, totalDownloads));
+    }
+
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<?> getResourceBySlug(@PathVariable String slug) {
+        Resource resource = this.resourceService.getResource(slug);
         if(resource == null) return ResponseEntity.notFound().build();
 
         int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);

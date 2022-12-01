@@ -28,6 +28,9 @@ public class Resource {
     private int id;
 
     @Column(nullable = false, unique = true)
+    private String slug;
+
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false, columnDefinition = "TEXT")

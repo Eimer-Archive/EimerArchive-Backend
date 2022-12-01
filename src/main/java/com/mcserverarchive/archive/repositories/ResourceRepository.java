@@ -62,4 +62,10 @@ public interface ResourceRepository extends JpaRepository<Resource, Integer>, Qu
     @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.blurb = ?4, resource.description = ?5, resource.source = ?6 WHERE resource.id = ?1")
     void updateResource(int id, byte[] logo, String name, String blurb, String description, String source);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.blurb = ?4, resource.description = ?5, resource.source = ?6 WHERE resource.slug = ?1")
+    void updateResourceBySlug(String slug, byte[] logo, String name, String blurb, String description, String source);
+
+    Optional<Resource> findBySlugEqualsIgnoreCase(String slug);
 }

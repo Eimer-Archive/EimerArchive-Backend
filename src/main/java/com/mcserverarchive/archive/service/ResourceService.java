@@ -54,6 +54,15 @@ public class ResourceService {
         return resource.get();
     }
 
+    public Resource getResource(String slug) {
+        Optional<Resource> resource = this.resourceRepository.findBySlugEqualsIgnoreCase(slug);
+
+        if (resource.isEmpty()) return null;
+
+        resource.get().setAuthor(null);
+        return resource.get();
+    }
+
     //TODO: More sanity checks
     public Resource createResource(CreateResourceRequest request) throws RestException {
         if (this.resourceRepository.existsByNameEqualsIgnoreCase(request.getName()))
@@ -71,6 +80,13 @@ public class ResourceService {
     public boolean updateResource(int resourceId, EditResourceRequest request) {
 
         resourceRepository.updateResource(resourceId, null, request.getName(), request.getBlurb(), request.getDescription(), request.getSource());
+
+        return true;
+    }
+
+    public boolean updateResource(String slug, EditResourceRequest request) {
+
+        resourceRepository.updateResourceBySlug(slug, null, request.getName(), request.getBlurb(), request.getDescription(), request.getSource());
 
         return true;
     }
