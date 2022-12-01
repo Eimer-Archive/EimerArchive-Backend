@@ -5,20 +5,16 @@ import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceRequest;
-import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
-import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.Resource;
 import com.mcserverarchive.archive.repositories.ResourceRepository;
 import com.mcserverarchive.archive.repositories.UpdateRepository;
-import com.mcserverarchive.archive.util.ImageUtil;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -79,14 +75,16 @@ public class ResourceService {
 
     public boolean updateResource(int resourceId, EditResourceRequest request) {
 
-        resourceRepository.updateResource(resourceId, null, request.getName(), request.getBlurb(), request.getDescription(), request.getSource());
+        System.out.println(request.getSlug());
+
+        resourceRepository.updateResource(resourceId, null, request.getName(), request.getSlug(), request.getBlurb(), request.getDescription(), request.getSource());
 
         return true;
     }
 
     public boolean updateResource(String slug, EditResourceRequest request) {
 
-        resourceRepository.updateResourceBySlug(slug, null, request.getName(), request.getBlurb(), request.getDescription(), request.getSource());
+        resourceRepository.updateResourceBySlug(slug, null, request.getName(), request.getSlug(), request.getBlurb(), request.getDescription(), request.getSource());
 
         return true;
     }

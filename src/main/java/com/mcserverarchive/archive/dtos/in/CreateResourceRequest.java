@@ -19,7 +19,7 @@ public class CreateResourceRequest {
 
     @Getter
     @Setter
-    public class Category {
+    public static class Category {
         private String name;
     }
 }

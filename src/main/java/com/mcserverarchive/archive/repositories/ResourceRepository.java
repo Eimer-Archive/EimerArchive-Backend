@@ -3,7 +3,6 @@ package com.mcserverarchive.archive.repositories;
 import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.QResource;
 import com.mcserverarchive.archive.model.Resource;
-import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -59,13 +58,13 @@ public interface ResourceRepository extends JpaRepository<Resource, Integer>, Qu
 
     @Modifying
     @Transactional
-    @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.blurb = ?4, resource.description = ?5, resource.source = ?6 WHERE resource.id = ?1")
-    void updateResource(int id, byte[] logo, String name, String blurb, String description, String source);
+    @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.slug = ?4, resource.blurb = ?5, resource.description = ?6, resource.source = ?7 WHERE resource.id = ?1")
+    void updateResource(int id, byte[] logo, String name, String slug, String blurb, String description, String source);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.blurb = ?4, resource.description = ?5, resource.source = ?6 WHERE resource.slug = ?1")
-    void updateResourceBySlug(String slug, byte[] logo, String name, String blurb, String description, String source);
+    @Query("UPDATE Resource resource SET resource.logo = ?2, resource.name = ?3, resource.slug = ?4, resource.blurb = ?5, resource.description = ?6, resource.source = ?7 WHERE resource.slug = ?1")
+    void updateResourceBySlug(String slug, byte[] logo, String name, String newSlug, String blurb, String description, String source);
 
     Optional<Resource> findBySlugEqualsIgnoreCase(String slug);
 }
