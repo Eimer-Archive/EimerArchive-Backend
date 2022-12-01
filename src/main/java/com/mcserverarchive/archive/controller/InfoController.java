@@ -1,6 +1,7 @@
 package com.mcserverarchive.archive.controller;
 
 import com.mcserverarchive.archive.dtos.in.UserFromTokenDto;
+import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.dtos.out.UsernameDto;
 import com.mcserverarchive.archive.model.Token;
 import com.mcserverarchive.archive.repositories.TokenRepository;
@@ -24,7 +25,7 @@ public class InfoController {
     public ResponseEntity<?> getAccountInfoFromToken(@RequestBody UserFromTokenDto dto) {
 
         Optional<Token> optionalToken = tokenRepository.findByToken(dto.getToken());
-        if (optionalToken.isEmpty()) return ResponseEntity.ok().body("Invalid token");
+        if (optionalToken.isEmpty()) return ResponseEntity.ok().body(ErrorDto.create(0, "Invalid token"));
 
         Token token1 = optionalToken.get();
 

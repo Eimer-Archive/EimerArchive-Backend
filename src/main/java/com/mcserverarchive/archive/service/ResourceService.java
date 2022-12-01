@@ -78,8 +78,6 @@ public class ResourceService {
 
     public boolean updateResource(int resourceId, EditResourceRequest request) {
 
-        System.out.println(request.getSlug());
-
         resourceRepository.updateResource(resourceId, null, request.getName(), request.getSlug(), request.getBlurb(), request.getDescription(), request.getSource());
 
         return true;

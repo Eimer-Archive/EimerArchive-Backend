@@ -1,5 +1,6 @@
 package com.mcserverarchive.archive.controller;
 
+import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.ERole;
 import com.mcserverarchive.archive.model.Role;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController()
@@ -51,34 +53,33 @@ public class AuthController {
     }
 
     @PostMapping("signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, @CookieValue(name = "user-cookie", required = false) String ct) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+        Optional<Account> optionalAccount = this.accountRepository.findByUsernameEquals(loginRequest.getUsername());
 
-        try {
-            Account account = accountService.getAccountByUsername(loginRequest.getUsername());
-
-            if (!BCrypt.checkpw(loginRequest.getPassword(), account.getPassword())) {
-                return ResponseEntity.ok().body("{\"error\": \"Incorrect password\"}");
-            }
-
-            Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusMinutes(1), "0.0.0.0", account);
-            accountService.createToken(token);
-
-            ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").httpOnly(false).maxAge(60000).build();
-
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Invalid username or password"));
+        if (optionalAccount.isEmpty()) {
+            return ResponseEntity.ok().body(ErrorDto.create(0, "Invalid username"));
         }
+
+        if (!BCrypt.checkpw(loginRequest.getPassword(), optionalAccount.get().getPassword())) {
+            return ResponseEntity.ok().body("{\"errorText\": \"Incorrect password\"}");
+        }
+
+        Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusMinutes(1), "0.0.0.0", optionalAccount.get());
+        accountService.createToken(token);
+
+        ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").httpOnly(false).maxAge(60000).build();
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
     @PostMapping("signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (accountRepository.existsByUsernameEqualsIgnoreCase(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            return ResponseEntity.ok().body(ErrorDto.create(0, "Username is already taken!"));
         }
 
         if (accountRepository.existsByEmailEqualsIgnoreCase(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+            return ResponseEntity.badRequest().body(ErrorDto.create(0, "Email is already in use!"));
         }
 
         // Create new user's account
