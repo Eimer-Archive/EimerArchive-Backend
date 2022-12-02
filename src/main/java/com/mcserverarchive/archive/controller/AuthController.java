@@ -47,7 +47,7 @@ public class AuthController {
     @PostMapping("signout")
     public ResponseEntity<?> logoutUser(@CookieValue(name = "user-cookie") String ct) {
 
-        ResponseCookie cookie = ResponseCookie.from("user-cookie", "").path("/").httpOnly(false).maxAge(0).sameSite("None").secure(true).build();
+        ResponseCookie cookie = ResponseCookie.from("user-cookie", "").path("/").httpOnly(false).maxAge(0).sameSite("None").secure(true).domain("").build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("You've been signed out!"));
     }
@@ -64,10 +64,10 @@ public class AuthController {
             return ResponseEntity.ok().body("{\"errorText\": \"Incorrect password\"}");
         }
 
-        Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusMinutes(1), "0.0.0.0", optionalAccount.get());
+        Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusWeeks(1), "0.0.0.0", optionalAccount.get());
         accountService.createToken(token);
 
-        ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").httpOnly(false).maxAge(60000).build();
+        ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").secure(true).httpOnly(false).maxAge(604800).domain("").build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
