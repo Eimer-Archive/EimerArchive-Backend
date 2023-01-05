@@ -4,7 +4,6 @@ import com.mcserverarchive.archive.config.custom.SiteConfig;
 import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateUpdateRequest;
-import com.mcserverarchive.archive.dtos.in.Test;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.File;

@@ -1,8 +1,8 @@
 package com.mcserverarchive.archive.dtos.out;
 
-public record ErrorDto(int error, String errorText) {
+public record ErrorDto(String error) {
 
-    public static ErrorDto create(int error, String errorText) {
-        return new ErrorDto(error, errorText);
+    public static ErrorDto create(String error) {
+        return new ErrorDto(error);
     }
 }

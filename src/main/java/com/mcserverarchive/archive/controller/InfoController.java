@@ -25,7 +25,7 @@ public class InfoController {
     public ResponseEntity<?> getAccountInfoFromToken(@RequestBody UserFromTokenDto dto) {
 
         Optional<Token> optionalToken = tokenRepository.findByToken(dto.getToken());
-        if (optionalToken.isEmpty()) return ResponseEntity.ok().body(ErrorDto.create(0, "Invalid token"));
+        if (optionalToken.isEmpty()) return ResponseEntity.ok().body(ErrorDto.create("Invalid token"));
 
         Token token1 = optionalToken.get();
 

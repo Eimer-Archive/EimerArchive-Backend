@@ -57,7 +57,7 @@ public class AuthController {
         Optional<Account> optionalAccount = this.accountRepository.findByUsernameEquals(loginRequest.getUsername());
 
         if (optionalAccount.isEmpty()) {
-            return ResponseEntity.ok().body(ErrorDto.create(0, "Invalid username"));
+            return ResponseEntity.ok().body(ErrorDto.create("Invalid username"));
         }
 
         if (!BCrypt.checkpw(loginRequest.getPassword(), optionalAccount.get().getPassword())) {
@@ -75,11 +75,11 @@ public class AuthController {
     @PostMapping("signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (accountRepository.existsByUsernameEqualsIgnoreCase(signUpRequest.getUsername())) {
-            return ResponseEntity.ok().body(ErrorDto.create(0, "Username is already taken!"));
+            return ResponseEntity.ok().body(ErrorDto.create("Username is already taken!"));
         }
 
         if (accountRepository.existsByEmailEqualsIgnoreCase(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(0, "Email is already in use!"));
+            return ResponseEntity.badRequest().body(ErrorDto.create("Email is already in use!"));
         }
 
         // Create new user's account

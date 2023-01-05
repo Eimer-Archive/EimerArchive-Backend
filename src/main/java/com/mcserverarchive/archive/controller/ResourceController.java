@@ -5,6 +5,7 @@ import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceRequest;
+import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.dtos.out.ResourceDto;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
 import com.mcserverarchive.archive.dtos.out.VersionsDto;
@@ -60,12 +61,12 @@ public class ResourceController {
     }
 
     @PostMapping("/create")
-    public void createResource(@RequestBody String map, @RequestHeader("authorization") String token) throws RestException { // Could use Map<String, Object> instead of String
+    public ResponseEntity<?> createResource(@RequestBody String map, @RequestHeader("authorization") String token) { // Could use Map<String, Object> instead of String
         if (!accountService.hasPermissionToUpload(token)) {
-            return;
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
         }
         CreateResourceRequest request = new Gson().fromJson(map, CreateResourceRequest.class);
-        this.resourceService.createResource(request);
+        return this.resourceService.createResource(request);
     }
 
     @PostMapping("/{resourceId}/edit")

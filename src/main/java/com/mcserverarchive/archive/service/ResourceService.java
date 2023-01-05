@@ -2,9 +2,9 @@ package com.mcserverarchive.archive.service;
 
 import com.mcserverarchive.archive.config.custom.SiteConfig;
 import com.mcserverarchive.archive.config.exception.RestErrorCode;
-import com.mcserverarchive.archive.config.exception.RestException;
 import com.mcserverarchive.archive.dtos.in.CreateResourceRequest;
 import com.mcserverarchive.archive.dtos.in.resource.EditResourceRequest;
+import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.dtos.out.SimpleResourceDto;
 import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.Resource;
@@ -14,6 +14,7 @@ import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -60,20 +61,25 @@ public class ResourceService {
     }
 
     //TODO: More sanity checks
-    public Resource createResource(CreateResourceRequest request) throws RestException {
-        if (this.resourceRepository.existsByNameEqualsIgnoreCase(request.getName()))
-            throw new RestException(RestErrorCode.RESOURCE_NAME_NOT_AVAILABLE);
-        if (request.getName().isEmpty() || request.getBlurb().isEmpty() || request.getDescription().isEmpty())
-            throw new RestException(RestErrorCode.REQUIRED_ARGUMENTS_MISSING);
+    public ResponseEntity<?> createResource(CreateResourceRequest request) {
+        if (this.resourceRepository.existsByNameEqualsIgnoreCase(request.getName())) {
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_NAME_NOT_AVAILABLE.getDescription()));
+        }
+        if (request.getName().isEmpty() || request.getBlurb().isEmpty() || request.getDescription().isEmpty()) {
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.REQUIRED_ARGUMENTS_MISSING.getDescription()));
+        }
 
-        if (this.resourceRepository.existsBySlugEqualsIgnoreCase(request.getSlug()))
-            throw new RestException(RestErrorCode.RESOURCE_SLUG_NOT_AVAILABLE);
+        if (this.resourceRepository.existsBySlugEqualsIgnoreCase(request.getSlug())) {
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_SLUG_NOT_AVAILABLE.getDescription()));
+        }
 
         Resource resource = new Resource(request.getName(), request.getSlug(), request.getDescription(),
                 request.getBlurb(), request.getSource(),
                 request.getAuthor(), ECategory.valueOf(request.getCategory().getName().toUpperCase()));
 
-        return this.resourceRepository.save(resource);
+        this.resourceRepository.save(resource);
+
+        return ResponseEntity.ok().build();
     }
 
     public boolean updateResource(int resourceId, EditResourceRequest request) {
