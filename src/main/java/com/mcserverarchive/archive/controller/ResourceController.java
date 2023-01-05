@@ -61,7 +61,6 @@ public class ResourceController {
 
     @PostMapping("/create")
     public void createResource(@RequestBody String map, @RequestHeader("authorization") String token) throws RestException { // Could use Map<String, Object> instead of String
-        System.out.println(map);
         if (!accountService.hasPermissionToUpload(token)) {
             return;
         }
