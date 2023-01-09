@@ -9,6 +9,7 @@ public enum RestErrorCode {
     INVALID_EMAIL(HttpStatus.BAD_REQUEST, "auth", 2, "Invalid email"),
     USERNAME_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "auth", 3, "Username not available"),
     EMAIL_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "auth", 4, "Email not available"),
+    WRONG_DETAILS(HttpStatus.BAD_REQUEST, "auth", 5, "Username or password is incorrect"),
 
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "auth", 100, "Unauthorized"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "auth", 101, "Forbidden"),

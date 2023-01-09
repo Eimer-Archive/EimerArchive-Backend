@@ -73,30 +73,26 @@ public class ResourceController {
     public ResponseEntity<?> updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestBody EditResourceRequest request) throws RestException {
 
         if (!this.accountService.hasPermissionToUpload(token)) {
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
         }
 
-        this.resourceService.updateResource(resourceId, request);
-
-        return ResponseEntity.ok().build();
+        return this.resourceService.updateResource(resourceId, request);
     }
 
     @PostMapping("/slug/{slug}/edit")
     public ResponseEntity<?> updateResourceInfoSlug(@RequestHeader("authorization") String token, @PathVariable String slug, @RequestBody EditResourceRequest request) throws RestException {
 
         if (!this.accountService.hasPermissionToUpload(token)) {
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
         }
 
-        this.resourceService.updateResource(slug, request);
-
-        return ResponseEntity.ok().build();
+        return this.resourceService.updateResource(slug, request);
     }
 
     @GetMapping("/{resourceId}")
     public ResponseEntity<?> getResource(@PathVariable int resourceId) {
         Resource resource = this.resourceService.getResource(resourceId);
-        if(resource == null) return ResponseEntity.notFound().build();
+        if(resource == null) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
 
         int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
 
@@ -106,7 +102,7 @@ public class ResourceController {
     @GetMapping("/slug/{slug}")
     public ResponseEntity<?> getResourceBySlug(@PathVariable String slug) {
         Resource resource = this.resourceService.getResource(slug);
-        if(resource == null) return ResponseEntity.notFound().build();
+        if(resource == null) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
 
         int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
 

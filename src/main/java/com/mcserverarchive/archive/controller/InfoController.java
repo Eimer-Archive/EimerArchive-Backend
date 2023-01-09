@@ -1,5 +1,6 @@
 package com.mcserverarchive.archive.controller;
 
+import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.dtos.in.UserFromTokenDto;
 import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.dtos.out.UsernameDto;
@@ -25,7 +26,7 @@ public class InfoController {
     public ResponseEntity<?> getAccountInfoFromToken(@RequestBody UserFromTokenDto dto) {
 
         Optional<Token> optionalToken = tokenRepository.findByToken(dto.getToken());
-        if (optionalToken.isEmpty()) return ResponseEntity.ok().body(ErrorDto.create("Invalid token"));
+        if (optionalToken.isEmpty()) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
 
         Token token1 = optionalToken.get();
 

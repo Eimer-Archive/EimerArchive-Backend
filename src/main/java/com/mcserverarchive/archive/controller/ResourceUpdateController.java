@@ -22,14 +22,8 @@ public class ResourceUpdateController {
     private final ResourceUpdateService resourceUpdateService;
 
     @PostMapping("/upload")
-    public void createUpdate(@RequestHeader("authorization") String token, @RequestParam("file") MultipartFile file, @RequestPart("data") String data) throws RestException {
-//        Path resourcePath = Path.of("C:\\Users\\prest\\Downloads\\txt.txt");
-//        try (InputStream inputStream = file.getInputStream()) {
-//            Files.copy(inputStream, resourcePath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        this.resourceUpdateService.createUpdate(file, new Gson().fromJson(data, CreateUpdateRequest.class));
+    public ResponseEntity<?> createUpdate(@RequestHeader("authorization") String token, @RequestParam("file") MultipartFile file, @RequestPart("data") String data) throws RestException {
+        return this.resourceUpdateService.createUpdate(file, new Gson().fromJson(data, CreateUpdateRequest.class));
     }
 
     @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

@@ -1,5 +1,6 @@
 package com.mcserverarchive.archive.controller;
 
+import com.mcserverarchive.archive.config.exception.RestErrorCode;
 import com.mcserverarchive.archive.dtos.out.ErrorDto;
 import com.mcserverarchive.archive.model.Account;
 import com.mcserverarchive.archive.model.ERole;
@@ -49,7 +50,7 @@ public class AuthController {
 
         ResponseCookie cookie = ResponseCookie.from("user-cookie", "").path("/").httpOnly(false).maxAge(0).sameSite("None").secure(true).domain("").build();
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("You've been signed out!"));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
 
     @PostMapping("signin")
@@ -57,11 +58,11 @@ public class AuthController {
         Optional<Account> optionalAccount = this.accountRepository.findByUsernameEquals(loginRequest.getUsername());
 
         if (optionalAccount.isEmpty()) {
-            return ResponseEntity.ok().body(ErrorDto.create("Invalid username"));
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.INVALID_USERNAME.getDescription()));
         }
 
         if (!BCrypt.checkpw(loginRequest.getPassword(), optionalAccount.get().getPassword())) {
-            return ResponseEntity.ok().body("{\"errorText\": \"Incorrect password\"}");
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.WRONG_DETAILS.getDescription()));
         }
 
         Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusWeeks(1), "0.0.0.0", optionalAccount.get());
@@ -75,11 +76,11 @@ public class AuthController {
     @PostMapping("signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (accountRepository.existsByUsernameEqualsIgnoreCase(signUpRequest.getUsername())) {
-            return ResponseEntity.ok().body(ErrorDto.create("Username is already taken!"));
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.USERNAME_NOT_AVAILABLE.getDescription()));
         }
 
         if (accountRepository.existsByEmailEqualsIgnoreCase(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(ErrorDto.create("Email is already in use!"));
+            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.EMAIL_NOT_AVAILABLE.getDescription()));
         }
 
         // Create new user's account
@@ -119,7 +120,7 @@ public class AuthController {
         //account.setRoles(roles);
         accountRepository.save(account);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok().build();
     }
 
     @Bean

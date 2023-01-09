@@ -82,17 +82,17 @@ public class ResourceService {
         return ResponseEntity.ok().build();
     }
 
-    public boolean updateResource(int resourceId, EditResourceRequest request) {
+    public ResponseEntity<?> updateResource(int resourceId, EditResourceRequest request) {
 
         resourceRepository.updateResource(resourceId, null, request.getName(), request.getSlug(), request.getBlurb(), request.getDescription(), request.getSource());
 
-        return true;
+        return ResponseEntity.ok().build();
     }
 
-    public boolean updateResource(String slug, EditResourceRequest request) {
+    public ResponseEntity<?> updateResource(String slug, EditResourceRequest request) {
 
         resourceRepository.updateResourceBySlug(slug, null, request.getName(), request.getSlug(), request.getBlurb(), request.getDescription(), request.getSource());
 
-        return true;
+        return ResponseEntity.ok().build();
     }
 }
