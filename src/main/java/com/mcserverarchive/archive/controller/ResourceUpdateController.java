@@ -27,7 +27,7 @@ public class ResourceUpdateController {
     }
 
     @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<java.io.File> getFile(@PathVariable int updateId) throws RestException {
+    public ResponseEntity<java.io.File> getFile(@PathVariable int updateId) {
         ResourceUpdateService.FileReturn fileReturn = this.resourceUpdateService.getDownload(updateId);
         return ResponseEntity.ok()
                 .headers(httpHeaders -> httpHeaders.setContentDisposition(

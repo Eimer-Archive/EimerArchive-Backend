@@ -10,7 +10,6 @@ import com.mcserverarchive.archive.model.ECategory;
 import com.mcserverarchive.archive.model.Resource;
 import com.mcserverarchive.archive.repositories.ResourceRepository;
 import com.mcserverarchive.archive.repositories.UpdateRepository;
-import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,15 +25,15 @@ public class ResourceService {
     private final UpdateRepository updateRepository;
     private final SiteConfig siteConfig;
 
-    public Page<SimpleResourceDto> searchResources(Pageable pageable, Predicate query) {
-        return this.resourceRepository.findAll(query, pageable)
+    public Page<SimpleResourceDto> searchResources(Pageable pageable) {
+        return this.resourceRepository.findAll(pageable)
                 .map(resource -> {
                     int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
                     return SimpleResourceDto.create(resource, totalDownloads);
                 });
     }
 
-    public Page<SimpleResourceDto> searchResources(ECategory category, Pageable pageable, Predicate query) {
+    public Page<SimpleResourceDto> searchResources(ECategory category, Pageable pageable) {
         return this.resourceRepository.findAllByCategory(category, pageable)
                 .map(resource -> {
                     int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);

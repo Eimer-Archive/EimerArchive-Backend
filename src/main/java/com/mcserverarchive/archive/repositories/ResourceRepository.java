@@ -1,16 +1,12 @@
 package com.mcserverarchive.archive.repositories;
 
 import com.mcserverarchive.archive.model.ECategory;
-import com.mcserverarchive.archive.model.QResource;
 import com.mcserverarchive.archive.model.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
-import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -18,18 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ResourceRepository extends JpaRepository<Resource, Integer>, QuerydslPredicateExecutor<Resource>, QuerydslBinderCustomizer<QResource> {
+public interface ResourceRepository extends JpaRepository<Resource, Integer> {
 
-    @Override
-    default void customize(QuerydslBindings bindings, QResource root) {
-        bindings.including(
-            root.name,
-            root.category
-            //root.author.username,
-            //root.author.id
-        );
-        bindings.excludeUnlistedProperties(true);
-    }
 
     boolean existsByNameEqualsIgnoreCase(String name);
 
