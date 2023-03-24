@@ -1,18 +1,12 @@
-# OnServerInit
+# Eimer Archive Backend
 
-OnServerInit is a WIP Minecraft plugin marketplace. It aims to add the features that are missing
-from other marketplaces. We will have features that help developers with their plugins.
+[![Discord Server](https://img.shields.io/discord/979589333524820018?color=7289da&label=DISCORD&style=flat-square&logo=appveyor)](https://discord.gg/k8RcgxpnBS)
 
-## Naming
+Eimer Archive is a website that hosts files as an archive, it focuses mainly on Minecraft server software but accepts other files. The backend is made with Springboot.
 
-The name is currently OnServerInit but this is not final, any other names are appreciated.
+## Usage
 
-## Links
+### Requirements
 
-Trello board: https://trello.com/b/nZ9TzBKC/onserverinit
-
-Discord invite: https://discord.gg/Qw8N9J9zEc
-
-# Developing
-
-Clone the github code then make a mysql database and change the database login details in resources/application.properties file
+- Java 17
+- MySQL/MariaDB database
