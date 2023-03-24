@@ -9,11 +9,12 @@ import org.eimerarchive.archive.dtos.in.SignupRequest;
 import org.eimerarchive.archive.dtos.in.account.CreateAccountRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.model.Account;
-import org.eimerarchive.archive.model.Role;
+import org.eimerarchive.archive.model.Settings;
 import org.eimerarchive.archive.model.Token;
 import org.eimerarchive.archive.model.enums.ERole;
 import org.eimerarchive.archive.repositories.AccountRepository;
 import org.eimerarchive.archive.repositories.RoleRepository;
+import org.eimerarchive.archive.repositories.SettingsRepository;
 import org.eimerarchive.archive.repositories.TokenRepository;
 import org.eimerarchive.archive.util.ValidationHelper;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,7 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final TokenRepository tokenRepository;
     private final RoleRepository roleRepository;
+    private final SettingsRepository settingsRepository;
 
     private final PasswordEncoder encoder;
 
@@ -64,7 +66,7 @@ public class AccountService implements UserDetailsService {
         Token token = new Token(0, optionalAccount.get());
         createToken(token);
 
-        ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").secure(true).httpOnly(false).maxAge(604800).domain("").build();
+        ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken().toString()).path("/").secure(true).httpOnly(false).maxAge(604800).domain("").build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
@@ -80,38 +82,15 @@ public class AccountService implements UserDetailsService {
 
         // Create new user's account
         Account account = new Account(signUpRequest.getUsername(), signUpRequest.getEmail(), this.encoder.encode(signUpRequest.getPassword()), null);
+        account.setRoles(new HashSet<>(Collections.singleton(roleRepository.findByName(ERole.ROLE_USER).get())));
 
-        Set<String> strRoles = new HashSet<>(Collections.singletonList("USER"));
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin" -> {
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                    }
-                    case "mod" -> {
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-                    }
-                    default -> {
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                    }
-                }
-            });
-        }
-
-        //account.setRoles(roles);
         accountRepository.save(account);
+
+        // TODO: I am not sure if this is the best way to make the settings, revisit this in the future
+        // Create the settings, set and save them to the account
+        Settings settings = new Settings("", account);
+        account.setSettings(settings);
+        settingsRepository.save(settings);
 
         return ResponseEntity.ok().build();
     }
@@ -123,7 +102,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public void createToken(Token token) {
-        tokenRepository.save(token);
+        this.tokenRepository.save(token);
     }
 
     public Account register(CreateAccountRequest request) throws RestException {
@@ -151,11 +130,11 @@ public class AccountService implements UserDetailsService {
     }
 
     public boolean hasPermissionToUpload(String token) {
-        if (!this.tokenRepository.existsByToken(token)) {
+        if (!this.tokenRepository.existsByToken(UUID.fromString(token))) {
             return false;
         }
 
-        Token tokenObj = this.tokenRepository.findByToken(token).get();
+        Token tokenObj = this.tokenRepository.findByToken(UUID.fromString(token)).get();
         Account account = tokenObj.getAccount();
         //return account.getRole().equalsIgnoreCase("ROLE_UPLOAD") || account.getRole().equalsIgnoreCase("ROLE_ADMIN");
         return false;

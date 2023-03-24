@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -25,7 +26,7 @@ public class InfoController {
     @PostMapping("info")
     public ResponseEntity<?> getAccountInfoFromToken(@RequestBody UserFromTokenRequest dto) {
 
-        Optional<Token> optionalToken = tokenRepository.findByToken(dto.getToken());
+        Optional<Token> optionalToken = tokenRepository.findByToken(UUID.fromString(dto.getToken()));
         if (optionalToken.isEmpty()) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));
 
         Token token1 = optionalToken.get();

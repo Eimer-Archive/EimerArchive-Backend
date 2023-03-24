@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Entity
@@ -14,7 +15,7 @@ public class Token {
 
     @Id
     @Column(columnDefinition = "BINARY(16)")
-    private String token;
+    private UUID token;
 
     @Column(nullable = false)
     private LocalDateTime created;
@@ -29,7 +30,7 @@ public class Token {
     private Account account;
 
     public Token(long ip, Account account) {
-        this.token = java.util.UUID.randomUUID().toString();
+        this.token = UUID.randomUUID();
         this.created = LocalDateTime.now();
         this.expires = LocalDateTime.now().plusDays(7);
         this.ip = ip;
