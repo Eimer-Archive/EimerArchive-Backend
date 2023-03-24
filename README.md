@@ -10,3 +10,14 @@ Eimer Archive is a website that hosts files as an archive, it focuses mainly on 
 
 - Java 17
 - MySQL/MariaDB database
+
+### Setup
+
+Once you create a database for this to connect to you need to run these commands to get it setup
+
+```mysql
+INSERT INTO roles(name) VALUES('ROLE_USER');
+INSERT INTO roles(name) VALUES('ROLE_ARCHIVER');
+INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
+INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+```
