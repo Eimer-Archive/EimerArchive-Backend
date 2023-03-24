@@ -1,12 +1,10 @@
 package org.eimerarchive.archive.service;
 
 import lombok.RequiredArgsConstructor;
-import org.eimerarchive.archive.config.custom.SiteConfig;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.config.exception.RestException;
 import org.eimerarchive.archive.dtos.in.LoginRequest;
 import org.eimerarchive.archive.dtos.in.SignupRequest;
-import org.eimerarchive.archive.dtos.in.account.CreateAccountRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.model.Account;
 import org.eimerarchive.archive.model.Settings;
@@ -16,7 +14,6 @@ import org.eimerarchive.archive.repositories.AccountRepository;
 import org.eimerarchive.archive.repositories.RoleRepository;
 import org.eimerarchive.archive.repositories.SettingsRepository;
 import org.eimerarchive.archive.repositories.TokenRepository;
-import org.eimerarchive.archive.util.ValidationHelper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +39,6 @@ public class AccountService implements UserDetailsService {
     private final SettingsRepository settingsRepository;
 
     private final PasswordEncoder encoder;
-
-    private final SiteConfig siteConfig;
 
     @Override
     @Transactional
@@ -104,23 +99,6 @@ public class AccountService implements UserDetailsService {
     public void createToken(Token token) {
         this.tokenRepository.save(token);
     }
-
-    public Account register(CreateAccountRequest request) throws RestException {
-        String username = request.getUsername();
-        if (!ValidationHelper.isUsernameValid(username)) throw new RestException(RestErrorCode.INVALID_USERNAME);
-
-        String email = request.getEmail();
-        if (!ValidationHelper.isEmailValid(email)) throw new RestException(RestErrorCode.INVALID_EMAIL);
-
-        if (this.accountRepository.existsByUsernameEqualsIgnoreCase(username)) throw new RestException(RestErrorCode.USERNAME_NOT_AVAILABLE);
-        if (this.accountRepository.existsByEmailEqualsIgnoreCase(email)) throw new RestException(RestErrorCode.EMAIL_NOT_AVAILABLE);
-
-        Account account = new Account(username, email, request.getPassword(), null);
-        this.accountRepository.save(account);
-
-        return account;
-    }
-
     public Account getAccount(long id) throws RestException {
         return this.accountRepository.findById(id).orElseThrow(() -> new RestException(RestErrorCode.ACCOUNT_NOT_FOUND));
     }
@@ -139,28 +117,4 @@ public class AccountService implements UserDetailsService {
         //return account.getRole().equalsIgnoreCase("ROLE_UPLOAD") || account.getRole().equalsIgnoreCase("ROLE_ADMIN");
         return false;
     }
-
-    // todo will there be concurrency issues with performing this all in one update?
-//    public Account updateAccountDetails(Account account, UpdateAccountRequest request, MultipartFile file) throws RestException {
-//        if (file != null) {
-//            if (file.getContentType() == null || !file.getContentType().contains("image")) throw new RestException(RestErrorCode.WRONG_FILE_TYPE);
-//            if (file.getSize() > this.siteConfig.getMaxUploadSize().toBytes()) throw new RestException(RestErrorCode.FILE_TOO_LARGE);
-//
-//            account.setProfilePicture(ImageUtil.handleImage(file));
-//        }
-//        if (request.getEmail() != null) {
-//            String email = request.getEmail();
-//            if (!ValidationHelper.isEmailValid(email)) throw new RestException(RestErrorCode.INVALID_EMAIL);
-//            if (this.accountRepository.existsByEmailEqualsIgnoreCase(email)) throw new RestException(RestErrorCode.EMAIL_NOT_AVAILABLE);
-//            account.setEmail(email);
-//        }
-//        if (request.getUsername() != null) {
-//            String username = request.getUsername();
-//            if (!ValidationHelper.isUsernameValid(username)) throw new RestException(RestErrorCode.INVALID_USERNAME);
-//            if (this.accountRepository.existsByUsernameEqualsIgnoreCase(username)) throw new RestException(RestErrorCode.USERNAME_NOT_AVAILABLE);
-//            account.setUsername(username);
-//        }
-//        this.accountRepository.save(account);
-//        return account;
-//    }
 }
