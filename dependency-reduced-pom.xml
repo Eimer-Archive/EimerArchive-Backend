@@ -55,7 +55,7 @@
                                     <resource>META-INF/spring.schemas</resource>
                                 </transformer>
                                 <transformer>
-                                    <mainClass>com.mcserverarchive.archive.ArchiveApplication</mainClass>
+                                    <mainClass>org.eimerarchive.archive.EimerArchiveApplication</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
