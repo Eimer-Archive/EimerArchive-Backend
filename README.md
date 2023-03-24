@@ -21,3 +21,9 @@ INSERT INTO roles(name) VALUES('ROLE_ARCHIVER');
 INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
 INSERT INTO roles(name) VALUES('ROLE_ADMIN');
 ```
+
+To add the admin role to an account run this where `<id>` is the accounts id
+
+```mysql
+insert into account_roles (account_id, role_id) VALUES (<id>, 4);
+```
