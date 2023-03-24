@@ -1,5 +1,6 @@
 package org.eimerarchive.archive.service;
 
+import com.google.gson.Gson;
 import org.eimerarchive.archive.config.custom.SiteConfig;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.dtos.in.CreateResourceRequest;
@@ -23,6 +24,7 @@ import java.util.Optional;
 public class ResourceService {
     private final ResourceRepository resourceRepository;
     private final UpdateRepository updateRepository;
+    private final AccountService accountService;
     private final SiteConfig siteConfig;
 
     public Page<SimpleResourceResponse> searchResources(Pageable pageable) {
@@ -60,7 +62,12 @@ public class ResourceService {
     }
 
     //TODO: More sanity checks
-    public ResponseEntity<?> createResource(CreateResourceRequest request) {
+    public ResponseEntity<?> createResource(String map, String token) {
+        if (!accountService.hasPermissionToUpload(token)) {
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));
+        }
+        CreateResourceRequest request = new Gson().fromJson(map, CreateResourceRequest.class);
+
         if (this.resourceRepository.existsByNameEqualsIgnoreCase(request.getName())) {
             return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_NAME_NOT_AVAILABLE.getDescription()));
         }

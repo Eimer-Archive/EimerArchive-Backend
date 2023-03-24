@@ -1,18 +1,16 @@
 package org.eimerarchive.archive.controller;
 
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.config.exception.RestException;
-import org.eimerarchive.archive.dtos.in.CreateResourceRequest;
 import org.eimerarchive.archive.dtos.in.resource.EditResourceRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.dtos.out.ResourceResponse;
 import org.eimerarchive.archive.dtos.out.SimpleResourceResponse;
 import org.eimerarchive.archive.dtos.out.VersionsResponse;
+import org.eimerarchive.archive.model.Resource;
 import org.eimerarchive.archive.model.enums.ECategory;
 import org.eimerarchive.archive.model.enums.EVersions;
-import org.eimerarchive.archive.model.Resource;
 import org.eimerarchive.archive.repositories.ResourceRepository;
 import org.eimerarchive.archive.repositories.UpdateRepository;
 import org.eimerarchive.archive.service.AccountService;
@@ -60,11 +58,7 @@ public class ResourceController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createResource(@RequestBody String map, @RequestHeader("authorization") String token) { // Could use Map<String, Object> instead of String
-        if (!accountService.hasPermissionToUpload(token)) {
-            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));
-        }
-        CreateResourceRequest request = new Gson().fromJson(map, CreateResourceRequest.class);
-        return this.resourceService.createResource(request);
+        return this.resourceService.createResource(map, token);
     }
 
     @PostMapping("/{resourceId}/edit")
