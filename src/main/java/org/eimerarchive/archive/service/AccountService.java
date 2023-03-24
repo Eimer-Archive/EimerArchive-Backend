@@ -142,7 +142,7 @@ public class AccountService implements UserDetailsService {
         return account;
     }
 
-    public Account getAccount(int id) throws RestException {
+    public Account getAccount(long id) throws RestException {
         return this.accountRepository.findById(id).orElseThrow(() -> new RestException(RestErrorCode.ACCOUNT_NOT_FOUND));
     }
 
