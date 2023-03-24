@@ -1,9 +1,7 @@
 package org.eimerarchive.archive.dtos.out;
 
-import org.eimerarchive.archive.model.Role;
+import java.util.List;
 
-import java.util.Set;
-
-public record UsernameResponse(String username, Set<Role> role, long id) {
+public record UsernameResponse(String username, List<String> roles, long id) {
 
 }
