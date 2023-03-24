@@ -4,8 +4,8 @@ import org.eimerarchive.archive.config.custom.SiteConfig;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.dtos.in.CreateResourceRequest;
 import org.eimerarchive.archive.dtos.in.resource.EditResourceRequest;
-import org.eimerarchive.archive.dtos.out.ErrorDto;
-import org.eimerarchive.archive.dtos.out.SimpleResourceDto;
+import org.eimerarchive.archive.dtos.out.ErrorResponse;
+import org.eimerarchive.archive.dtos.out.SimpleResourceResponse;
 import org.eimerarchive.archive.model.ECategory;
 import org.eimerarchive.archive.model.Resource;
 import org.eimerarchive.archive.repositories.ResourceRepository;
@@ -25,19 +25,19 @@ public class ResourceService {
     private final UpdateRepository updateRepository;
     private final SiteConfig siteConfig;
 
-    public Page<SimpleResourceDto> searchResources(Pageable pageable) {
+    public Page<SimpleResourceResponse> searchResources(Pageable pageable) {
         return this.resourceRepository.findAll(pageable)
                 .map(resource -> {
                     int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
-                    return SimpleResourceDto.create(resource, totalDownloads);
+                    return SimpleResourceResponse.create(resource, totalDownloads);
                 });
     }
 
-    public Page<SimpleResourceDto> searchResources(ECategory category, Pageable pageable) {
+    public Page<SimpleResourceResponse> searchResources(ECategory category, Pageable pageable) {
         return this.resourceRepository.findAllByCategory(category, pageable)
                 .map(resource -> {
                     int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
-                    return SimpleResourceDto.create(resource, totalDownloads);
+                    return SimpleResourceResponse.create(resource, totalDownloads);
                 });
     }
 
@@ -62,14 +62,14 @@ public class ResourceService {
     //TODO: More sanity checks
     public ResponseEntity<?> createResource(CreateResourceRequest request) {
         if (this.resourceRepository.existsByNameEqualsIgnoreCase(request.getName())) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_NAME_NOT_AVAILABLE.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_NAME_NOT_AVAILABLE.getDescription()));
         }
         if (request.getName().isEmpty() || request.getBlurb().isEmpty() || request.getDescription().isEmpty()) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.REQUIRED_ARGUMENTS_MISSING.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.REQUIRED_ARGUMENTS_MISSING.getDescription()));
         }
 
         if (this.resourceRepository.existsBySlugEqualsIgnoreCase(request.getSlug())) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_SLUG_NOT_AVAILABLE.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_SLUG_NOT_AVAILABLE.getDescription()));
         }
 
         Resource resource = new Resource(request.getName(), request.getSlug(), request.getDescription(),

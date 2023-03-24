@@ -3,6 +3,6 @@ package org.eimerarchive.archive.dtos.in;
 import lombok.Getter;
 
 @Getter
-public class UserFromTokenDto {
+public class UserFromTokenRequest {
     private String token;
 }

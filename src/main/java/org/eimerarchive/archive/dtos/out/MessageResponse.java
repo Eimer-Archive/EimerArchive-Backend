@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.payload.response;
+package org.eimerarchive.archive.dtos.out;
 
 public class MessageResponse {
     private String message;

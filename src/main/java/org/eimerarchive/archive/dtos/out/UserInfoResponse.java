@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.payload.response;
+package org.eimerarchive.archive.dtos.out;
 
 import java.util.List;
 

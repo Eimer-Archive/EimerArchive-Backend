@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class ResourceDto {
+public class ResourceResponse {
 
     private int id;
     private final int totalDownloads;
@@ -20,19 +20,19 @@ public class ResourceDto {
     private final byte[] logo;
     private final String account;
 
-    private final List<UpdateDto> updates;
+    private final List<UpdateResponse> updates;
 
-    public static ResourceDto create(Resource resource, int totalDownloads) {
-        return new ResourceDto(resource.getId(), totalDownloads, resource.getSlug(), resource.getName(), resource.getDescription(),
+    public static ResourceResponse create(Resource resource, int totalDownloads) {
+        return new ResourceResponse(resource.getId(), totalDownloads, resource.getSlug(), resource.getName(), resource.getDescription(),
                 resource.getBlurb(), resource.getSource(), resource.getCategory(), resource.getLogo(),
                 "test", getFiles(resource.getFiles()));
     }
 
-    private static List<UpdateDto> getFiles(List<File> files) {
-        List<UpdateDto> updateDtos = new ArrayList<>();
+    private static List<UpdateResponse> getFiles(List<File> files) {
+        List<UpdateResponse> updateResponses = new ArrayList<>();
         for(File file : files) {
-            updateDtos.add(UpdateDto.create(file));
+            updateResponses.add(UpdateResponse.create(file));
         }
-        return updateDtos;
+        return updateResponses;
     }
 }

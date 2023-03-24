@@ -3,13 +3,13 @@ package org.eimerarchive.archive.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
-import org.eimerarchive.archive.dtos.out.ErrorDto;
+import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.model.Account;
 import org.eimerarchive.archive.model.ERole;
 import org.eimerarchive.archive.model.Role;
 import org.eimerarchive.archive.model.Token;
-import org.eimerarchive.archive.payload.request.LoginRequest;
-import org.eimerarchive.archive.payload.request.SignupRequest;
+import org.eimerarchive.archive.dtos.in.LoginRequest;
+import org.eimerarchive.archive.dtos.in.SignupRequest;
 import org.eimerarchive.archive.repositories.AccountRepository;
 import org.eimerarchive.archive.repositories.RoleRepository;
 import org.eimerarchive.archive.repositories.TokenRepository;
@@ -57,11 +57,11 @@ public class AuthController {
         Optional<Account> optionalAccount = this.accountRepository.findByUsernameEquals(loginRequest.getUsername());
 
         if (optionalAccount.isEmpty()) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.INVALID_USERNAME.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.INVALID_USERNAME.getDescription()));
         }
 
         if (!BCrypt.checkpw(loginRequest.getPassword(), optionalAccount.get().getPassword())) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.WRONG_DETAILS.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.WRONG_DETAILS.getDescription()));
         }
 
         Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusWeeks(1), "0.0.0.0", optionalAccount.get());
@@ -75,11 +75,11 @@ public class AuthController {
     @PostMapping("signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (accountRepository.existsByUsernameEqualsIgnoreCase(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.USERNAME_NOT_AVAILABLE.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.USERNAME_NOT_AVAILABLE.getDescription()));
         }
 
         if (accountRepository.existsByEmailEqualsIgnoreCase(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.EMAIL_NOT_AVAILABLE.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.EMAIL_NOT_AVAILABLE.getDescription()));
         }
 
         // Create new user's account

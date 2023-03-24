@@ -6,10 +6,10 @@ import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.config.exception.RestException;
 import org.eimerarchive.archive.dtos.in.CreateResourceRequest;
 import org.eimerarchive.archive.dtos.in.resource.EditResourceRequest;
-import org.eimerarchive.archive.dtos.out.ErrorDto;
-import org.eimerarchive.archive.dtos.out.ResourceDto;
-import org.eimerarchive.archive.dtos.out.SimpleResourceDto;
-import org.eimerarchive.archive.dtos.out.VersionsDto;
+import org.eimerarchive.archive.dtos.out.ErrorResponse;
+import org.eimerarchive.archive.dtos.out.ResourceResponse;
+import org.eimerarchive.archive.dtos.out.SimpleResourceResponse;
+import org.eimerarchive.archive.dtos.out.VersionsResponse;
 import org.eimerarchive.archive.model.ECategory;
 import org.eimerarchive.archive.model.EVersions;
 import org.eimerarchive.archive.model.Resource;
@@ -41,19 +41,19 @@ public class ResourceController {
     private final UpdateRepository updateRepository;
 
     @GetMapping("mods")
-    public Page<SimpleResourceDto> searchModResources(@PageableDefault(size = 25, sort = "name", direction = Sort.Direction.DESC) Pageable pageable) throws RestException {
+    public Page<SimpleResourceResponse> searchModResources(@PageableDefault(size = 25, sort = "name", direction = Sort.Direction.DESC) Pageable pageable) throws RestException {
         if (pageable.getPageSize() > 50) throw new RestException(RestErrorCode.PAGE_SIZE_TOO_LARGE, "Page size is too large (%s > %s)", pageable.getPageSize(), 50);
         return this.resourceService.searchResources(ECategory.MODS, pageable);
     }
 
     @GetMapping("plugins")
-    public Page<SimpleResourceDto> searchPluginResources(@PageableDefault(size = 25, sort = "name", direction = Sort.Direction.DESC) Pageable pageable, String category) throws RestException {
+    public Page<SimpleResourceResponse> searchPluginResources(@PageableDefault(size = 25, sort = "name", direction = Sort.Direction.DESC) Pageable pageable, String category) throws RestException {
         if (pageable.getPageSize() > 50) throw new RestException(RestErrorCode.PAGE_SIZE_TOO_LARGE, "Page size is too large (%s > %s)", pageable.getPageSize(), 50);
         return this.resourceService.searchResources(ECategory.PLUGINS, pageable);
     }
 
     @GetMapping("software")
-    public Page<SimpleResourceDto> searchSoftwareResources(@PageableDefault(size = 25, sort = "name", direction = Sort.Direction.DESC) Pageable pageable, String category) throws RestException {
+    public Page<SimpleResourceResponse> searchSoftwareResources(@PageableDefault(size = 25, sort = "name", direction = Sort.Direction.DESC) Pageable pageable, String category) throws RestException {
         if (pageable.getPageSize() > 50) throw new RestException(RestErrorCode.PAGE_SIZE_TOO_LARGE, "Page size is too large (%s > %s)", pageable.getPageSize(), 50);
         return this.resourceService.searchResources(ECategory.SOFTWARE, pageable);
     }
@@ -61,7 +61,7 @@ public class ResourceController {
     @PostMapping("/create")
     public ResponseEntity<?> createResource(@RequestBody String map, @RequestHeader("authorization") String token) { // Could use Map<String, Object> instead of String
         if (!accountService.hasPermissionToUpload(token)) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));
         }
         CreateResourceRequest request = new Gson().fromJson(map, CreateResourceRequest.class);
         return this.resourceService.createResource(request);
@@ -71,7 +71,7 @@ public class ResourceController {
     public ResponseEntity<?> updateResourceInfo(@RequestHeader("authorization") String token, @PathVariable int resourceId, @RequestBody EditResourceRequest request) throws RestException {
 
         if (!this.accountService.hasPermissionToUpload(token)) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));
         }
 
         return this.resourceService.updateResource(resourceId, request);
@@ -81,7 +81,7 @@ public class ResourceController {
     public ResponseEntity<?> updateResourceInfoSlug(@RequestHeader("authorization") String token, @PathVariable String slug, @RequestBody EditResourceRequest request) throws RestException {
 
         if (!this.accountService.hasPermissionToUpload(token)) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));
         }
 
         return this.resourceService.updateResource(slug, request);
@@ -90,21 +90,21 @@ public class ResourceController {
     @GetMapping("/{resourceId}")
     public ResponseEntity<?> getResource(@PathVariable int resourceId) {
         Resource resource = this.resourceService.getResource(resourceId);
-        if(resource == null) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
+        if(resource == null) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
 
         int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
 
-        return ResponseEntity.ok(ResourceDto.create(resource, totalDownloads));
+        return ResponseEntity.ok(ResourceResponse.create(resource, totalDownloads));
     }
 
     @GetMapping("/slug/{slug}")
     public ResponseEntity<?> getResourceBySlug(@PathVariable String slug) {
         Resource resource = this.resourceService.getResource(slug);
-        if(resource == null) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
+        if(resource == null) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
 
         int totalDownloads = this.updateRepository.getTotalDownloads(resource.getId()).orElse(0);
 
-        return ResponseEntity.ok(ResourceDto.create(resource, totalDownloads));
+        return ResponseEntity.ok(ResourceResponse.create(resource, totalDownloads));
     }
 
     // TODO: properly delete
@@ -114,8 +114,8 @@ public class ResourceController {
     }
 
     @GetMapping("versions")
-    public VersionsDto getVersions() {
-        return VersionsDto.create(Arrays.stream(EVersions.values()).map(e -> e.version).toList());
+    public VersionsResponse getVersions() {
+        return VersionsResponse.create(Arrays.stream(EVersions.values()).map(e -> e.version).toList());
     }
 
     @GetMapping("categories")

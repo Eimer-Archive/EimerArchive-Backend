@@ -7,10 +7,10 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class VersionsDto {
+public class VersionsResponse {
     private List<String> versions;
 
-    public static VersionsDto create(List<String>versions) {
-        return new VersionsDto(versions);
+    public static VersionsResponse create(List<String>versions) {
+        return new VersionsResponse(versions);
     }
 }

@@ -1,9 +1,9 @@
 package org.eimerarchive.archive.controller;
 
 import org.eimerarchive.archive.config.exception.RestErrorCode;
-import org.eimerarchive.archive.dtos.in.UserFromTokenDto;
-import org.eimerarchive.archive.dtos.out.ErrorDto;
-import org.eimerarchive.archive.dtos.out.UsernameDto;
+import org.eimerarchive.archive.dtos.in.UserFromTokenRequest;
+import org.eimerarchive.archive.dtos.out.ErrorResponse;
+import org.eimerarchive.archive.dtos.out.UsernameResponse;
 import org.eimerarchive.archive.model.Token;
 import org.eimerarchive.archive.repositories.TokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +23,14 @@ public class InfoController {
     private final TokenRepository tokenRepository;
 
     @PostMapping("info")
-    public ResponseEntity<?> getAccountInfoFromToken(@RequestBody UserFromTokenDto dto) {
+    public ResponseEntity<?> getAccountInfoFromToken(@RequestBody UserFromTokenRequest dto) {
 
         Optional<Token> optionalToken = tokenRepository.findByToken(dto.getToken());
-        if (optionalToken.isEmpty()) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.FORBIDDEN.getDescription()));
+        if (optionalToken.isEmpty()) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));
 
         Token token1 = optionalToken.get();
 
-        return ResponseEntity.ok(new UsernameDto(token1.getAccount().getUsername(), token1.getAccount().getRole(), token1.getAccount().getId()));
+        return ResponseEntity.ok(new UsernameResponse(token1.getAccount().getUsername(), token1.getAccount().getRole(), token1.getAccount().getId()));
     }
 
     @Bean

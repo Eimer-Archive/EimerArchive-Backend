@@ -5,7 +5,7 @@ import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.config.exception.RestException;
 import org.eimerarchive.archive.dtos.in.CreateUpdateRequest;
 import org.eimerarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
-import org.eimerarchive.archive.dtos.out.ErrorDto;
+import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.model.Account;
 import org.eimerarchive.archive.model.File;
 import org.eimerarchive.archive.model.Resource;
@@ -62,12 +62,12 @@ public class ResourceUpdateService {
 
         //if (this.updateRepository.getUpdatesCreateLastHour(account.getId()) > this.siteConfig.getMaxUpdatesPerHour()) throw new RestException(RestErrorCode.TOO_MANY_RESOURCE_UPDATES);
 
-        if ((file.isEmpty() /*|| file.getSize() > this.siteConfig.getMaxUploadSize().toBytes()*/)) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.REQUIRED_ARGUMENTS_MISSING.getDescription()));
-        if ((!file.getOriginalFilename().endsWith(".jar") && !file.getOriginalFilename().endsWith(".zip"))) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.WRONG_FILE_TYPE.getDescription()));;
-        if (request.isMissingRequirements()) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.REQUIRED_ARGUMENTS_MISSING.getDescription()));;
+        if ((file.isEmpty() /*|| file.getSize() > this.siteConfig.getMaxUploadSize().toBytes()*/)) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.REQUIRED_ARGUMENTS_MISSING.getDescription()));
+        if ((!file.getOriginalFilename().endsWith(".jar") && !file.getOriginalFilename().endsWith(".zip"))) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.WRONG_FILE_TYPE.getDescription()));;
+        if (request.isMissingRequirements()) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.REQUIRED_ARGUMENTS_MISSING.getDescription()));;
 
         Optional<Resource> optionalResource = this.resourceRepository.findById(request.getId());
-        if (optionalResource.isEmpty()) return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
+        if (optionalResource.isEmpty()) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_NOT_FOUND.getDescription()));
         Resource resource = optionalResource.get();
 
         File update;
@@ -109,13 +109,13 @@ public class ResourceUpdateService {
     public ResponseEntity<?> getDownload(int updateId) {
         Optional<File> update = updateRepository.findById(updateId);
         if (update.isEmpty()) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_UPDATE_NOT_FOUND.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_UPDATE_NOT_FOUND.getDescription()));
         }
 
         // TODO: i think this is done weirdly, redo at some point
         String link = ""; //this.resourceUpdateService.getDownload(updateId);
         if (link == null) {
-            return ResponseEntity.badRequest().body(ErrorDto.create(RestErrorCode.RESOURCE_UPDATE_NOT_FOUND.getDescription()));
+            return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.RESOURCE_UPDATE_NOT_FOUND.getDescription()));
         }
 
         // TODO: restrict files that are private
