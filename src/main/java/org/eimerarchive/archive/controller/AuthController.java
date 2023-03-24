@@ -3,13 +3,13 @@ package org.eimerarchive.archive.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
-import org.eimerarchive.archive.dtos.out.ErrorResponse;
-import org.eimerarchive.archive.model.Account;
-import org.eimerarchive.archive.model.ERole;
-import org.eimerarchive.archive.model.Role;
-import org.eimerarchive.archive.model.Token;
 import org.eimerarchive.archive.dtos.in.LoginRequest;
 import org.eimerarchive.archive.dtos.in.SignupRequest;
+import org.eimerarchive.archive.dtos.out.ErrorResponse;
+import org.eimerarchive.archive.model.Account;
+import org.eimerarchive.archive.model.Role;
+import org.eimerarchive.archive.model.Token;
+import org.eimerarchive.archive.model.enums.ERole;
 import org.eimerarchive.archive.repositories.AccountRepository;
 import org.eimerarchive.archive.repositories.RoleRepository;
 import org.eimerarchive.archive.repositories.TokenRepository;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -64,7 +63,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.WRONG_DETAILS.getDescription()));
         }
 
-        Token token = new Token(LocalDateTime.now(), LocalDateTime.now().plusWeeks(1), "0.0.0.0", optionalAccount.get());
+        Token token = new Token(0, optionalAccount.get());
         accountService.createToken(token);
 
         ResponseCookie cookie = ResponseCookie.from("user-cookie", token.getToken()).path("/").secure(true).httpOnly(false).maxAge(604800).domain("").build();
@@ -83,9 +82,7 @@ public class AuthController {
         }
 
         // Create new user's account
-        Account account = new Account(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+        Account account = new Account(signUpRequest.getUsername(), signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()), null);
 
         Set<String> strRoles = new HashSet<>(Collections.singletonList("USER"));
         Set<Role> roles = new HashSet<>();

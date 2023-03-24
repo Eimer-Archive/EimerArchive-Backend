@@ -1,6 +1,6 @@
 package org.eimerarchive.archive.dtos.out;
 
-import org.eimerarchive.archive.model.EVersions;
+import org.eimerarchive.archive.model.enums.EVersions;
 import org.eimerarchive.archive.model.File;
 
 import java.util.List;

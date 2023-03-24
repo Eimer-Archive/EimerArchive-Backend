@@ -6,7 +6,7 @@ import org.eimerarchive.archive.dtos.in.CreateResourceRequest;
 import org.eimerarchive.archive.dtos.in.resource.EditResourceRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.dtos.out.SimpleResourceResponse;
-import org.eimerarchive.archive.model.ECategory;
+import org.eimerarchive.archive.model.enums.ECategory;
 import org.eimerarchive.archive.model.Resource;
 import org.eimerarchive.archive.repositories.ResourceRepository;
 import org.eimerarchive.archive.repositories.UpdateRepository;

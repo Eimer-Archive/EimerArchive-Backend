@@ -1,84 +1,64 @@
 package org.eimerarchive.archive.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
-@Entity
+@Entity(name = "accounts")
 @NoArgsConstructor
-public class Account implements UserDetails {
-
-    public Account(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.joined = LocalDateTime.now();
-        this.role = "ROLE_USER";
-    }
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "author")
-    private List<File> files = new ArrayList<>();
-
+    @Size(min = 3, max = 24)
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Size(min = 4, max = 120)
     @Column(nullable = false)
     private String password;
 
+    @Size(min = 3, max = 120)
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private LocalDateTime joined;
 
-    @Column(nullable = false)
-    private String role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "account_roles",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    @Lob
-    @Column(name = "profile_picture")
-    private byte[] profilePicture;
+    @OneToOne
+    @JoinColumn(name = "settings_id")
+    private Settings settings;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> list = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "author")
+    private List<File> files = new ArrayList<>();
 
-        list.add(new SimpleGrantedAuthority(getRole()));
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
 
-        return list;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public Account(String username, String email, String password, Image image) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.joined = LocalDateTime.now();
+        this.image = image;
     }
 }

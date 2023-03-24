@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.model;
+package org.eimerarchive.archive.model.enums;
 
 import java.util.ArrayList;
 import java.util.List;

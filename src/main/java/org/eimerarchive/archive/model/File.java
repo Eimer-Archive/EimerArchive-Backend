@@ -2,8 +2,10 @@ package org.eimerarchive.archive.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.eimerarchive.archive.dtos.in.Test;
+import org.eimerarchive.archive.model.enums.EVersions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,23 +14,8 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "files")
+@NoArgsConstructor
 public class File {
-
-//    public File(String description, String filename, String version, String name, List<Test[]> versions, List<String> software, Resource resource) {
-//        this.downloads = 0;
-//        this.description = description;
-//        this.filename = filename;
-//        this.version = version;
-//        this.name = name;
-//        this.software = software;
-//        this.resource = resource;
-//
-//        List<EVersions> versionsList = new ArrayList<>();
-//        for (String s : versions) {
-//            versionsList.add(EVersions.valueOf(s.toUpperCase()));
-//        }
-//        this.versions = versionsList;
-//    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,10 +49,6 @@ public class File {
 
     @Column(nullable = false)
     private int downloads;
-
-    public File() {
-
-    }
 
     public File(String description, String originalFilename, String version, String name, List<Test[]> versions, List<String> software, Resource resource) {
         this.downloads = 0;

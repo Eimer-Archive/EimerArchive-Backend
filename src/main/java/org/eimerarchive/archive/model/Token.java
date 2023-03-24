@@ -12,16 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Token {
 
-    public Token(LocalDateTime created, LocalDateTime expires, String ip, Account account) {
-        this.created = created;
-        this.expires = expires;
-        this.ip = ip;
-        this.account = account;
-        token = java.util.UUID.randomUUID().toString();
-    }
-
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BINARY(16)")
     private String token;
 
     @Column(nullable = false)
@@ -31,8 +23,16 @@ public class Token {
     private LocalDateTime expires;
 
     @Column
-    private String ip;
+    private long ip;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Account account;
+
+    public Token(long ip, Account account) {
+        this.token = java.util.UUID.randomUUID().toString();
+        this.created = LocalDateTime.now();
+        this.expires = LocalDateTime.now().plusDays(7);
+        this.ip = ip;
+        this.account = account;
+    }
 }

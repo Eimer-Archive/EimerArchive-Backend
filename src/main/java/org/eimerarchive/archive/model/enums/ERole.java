@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.model;
+package org.eimerarchive.archive.model.enums;
 
 public enum ERole {
     ROLE_USER,

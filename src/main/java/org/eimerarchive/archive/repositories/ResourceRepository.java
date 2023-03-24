@@ -1,6 +1,6 @@
 package org.eimerarchive.archive.repositories;
 
-import org.eimerarchive.archive.model.ECategory;
+import org.eimerarchive.archive.model.enums.ECategory;
 import org.eimerarchive.archive.model.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

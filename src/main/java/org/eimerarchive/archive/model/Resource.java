@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.eimerarchive.archive.model.enums.ECategory;
 
 import java.util.List;
 
@@ -12,16 +13,6 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 public class Resource {
-
-    public Resource(String name, String slug, String description, String blurb, String source, String author, ECategory category) {
-        this.name = name;
-        this.slug = slug;
-        this.description = description;
-        this.blurb = blurb;
-        this.source = source;
-        this.author = author;
-        this.category = category;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,4 +44,14 @@ public class Resource {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "resource")
     private List<File> files;
+
+    public Resource(String name, String slug, String description, String blurb, String source, String author, ECategory category) {
+        this.name = name;
+        this.slug = slug;
+        this.description = description;
+        this.blurb = blurb;
+        this.source = source;
+        this.author = author;
+        this.category = category;
+    }
 }

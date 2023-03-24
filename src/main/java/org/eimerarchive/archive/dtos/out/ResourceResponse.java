@@ -1,6 +1,6 @@
 package org.eimerarchive.archive.dtos.out;
 
-import org.eimerarchive.archive.model.ECategory;
+import org.eimerarchive.archive.model.enums.ECategory;
 import org.eimerarchive.archive.model.File;
 import org.eimerarchive.archive.model.Resource;
 import lombok.AllArgsConstructor;

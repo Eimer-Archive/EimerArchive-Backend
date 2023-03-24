@@ -1,6 +1,6 @@
 package org.eimerarchive.archive.repositories;
 
-import org.eimerarchive.archive.model.ERole;
+import org.eimerarchive.archive.model.enums.ERole;
 import org.eimerarchive.archive.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
