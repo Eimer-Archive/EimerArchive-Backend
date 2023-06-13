@@ -16,15 +16,12 @@ import org.eimerarchive.archive.repositories.UpdateRepository;
 import org.eimerarchive.archive.service.AccountService;
 import org.eimerarchive.archive.service.ResourceService;
 import org.eimerarchive.archive.service.ResourceUpdateService;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
@@ -115,17 +112,5 @@ public class ResourceController {
     @GetMapping("categories")
     public ECategory[] getCategories() {
         return ECategory.values();
-    }
-
-    @Bean
-    public WebMvcConfigurer resourceCorsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/archive/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("GET", "POST");
-            }
-        };
     }
 }

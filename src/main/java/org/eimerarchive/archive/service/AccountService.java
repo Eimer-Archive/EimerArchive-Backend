@@ -115,6 +115,6 @@ public class AccountService implements UserDetailsService {
         Token tokenObj = this.tokenRepository.findByToken(UUID.fromString(token)).get();
         Account account = tokenObj.getAccount();
         //return account.getRole().equalsIgnoreCase("ROLE_UPLOAD") || account.getRole().equalsIgnoreCase("ROLE_ADMIN");
-        return false;
+        return true;
     }
 }

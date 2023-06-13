@@ -1,5 +1,6 @@
 package org.eimerarchive.archive.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.dtos.in.UserFromTokenRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
@@ -8,12 +9,11 @@ import org.eimerarchive.archive.model.Role;
 import org.eimerarchive.archive.model.Token;
 import org.eimerarchive.archive.model.enums.ERole;
 import org.eimerarchive.archive.repositories.TokenRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -38,17 +38,5 @@ public class InfoController {
                 .map(Role::getName)
                 .map(ERole::name)
                 .collect(Collectors.toList()), token1.getAccount().getId()));
-    }
-
-    @Bean
-    public WebMvcConfigurer infoCorsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/info**")
-                        .allowedOrigins("*")
-                        .allowedMethods("GET", "POST");
-            }
-        };
     }
 }
