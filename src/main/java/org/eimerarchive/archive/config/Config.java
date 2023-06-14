@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.config.custom;
+package org.eimerarchive.archive.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import org.springframework.util.unit.DataUnit;
 @Getter
 @ConfigurationProperties(prefix = "app")
 @AllArgsConstructor
-public class SiteConfig {
+public class Config {
 
     private final String domain;
     private final String key;

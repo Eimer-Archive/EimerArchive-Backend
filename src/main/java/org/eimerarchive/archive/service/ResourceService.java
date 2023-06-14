@@ -1,7 +1,7 @@
 package org.eimerarchive.archive.service;
 
 import com.google.gson.Gson;
-import org.eimerarchive.archive.config.custom.SiteConfig;
+import org.eimerarchive.archive.config.Config;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.dtos.in.resource.CreateResourceRequest;
 import org.eimerarchive.archive.dtos.in.resource.EditResourceRequest;
@@ -25,7 +25,7 @@ public class ResourceService {
     private final ResourceRepository resourceRepository;
     private final UpdateRepository updateRepository;
     private final AccountService accountService;
-    private final SiteConfig siteConfig;
+    private final Config config;
 
     public Page<SimpleResourceResponse> searchResources(Pageable pageable) {
         return this.resourceRepository.findAll(pageable)

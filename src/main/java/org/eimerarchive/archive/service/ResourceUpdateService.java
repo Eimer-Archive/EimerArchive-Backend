@@ -1,6 +1,6 @@
 package org.eimerarchive.archive.service;
 
-import org.eimerarchive.archive.config.custom.SiteConfig;
+import org.eimerarchive.archive.config.Config;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.config.exception.RestException;
 import org.eimerarchive.archive.dtos.in.resource.CreateUpdateRequest;
@@ -30,7 +30,7 @@ import java.util.Optional;
 public class ResourceUpdateService {
     private final UpdateRepository updateRepository;
     private final ResourceRepository resourceRepository;
-    private final SiteConfig siteConfig;
+    private final Config config;
 
     public File changeStatus(Account account, int updateId, String status) throws RestException {
         File file = this.updateRepository.findById(updateId).orElseThrow(() -> new RestException(RestErrorCode.RESOURCE_UPDATE_NOT_FOUND));
@@ -84,7 +84,7 @@ public class ResourceUpdateService {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://mc-archive.justdoom.workers.dev/" + update.getResource().getId() + "/" + update.getId() + "/" + file.getOriginalFilename()).openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("PUT");
-            connection.setRequestProperty("X-Custom-Auth-Key", this.siteConfig.getKey());
+            connection.setRequestProperty("X-Custom-Auth-Key", this.config.getKey());
             connection.setUseCaches(false);
             connection.setAllowUserInteraction(false);
             connection.setConnectTimeout(100000);
