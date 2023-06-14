@@ -1,5 +1,6 @@
-package org.eimerarchive.archive.dtos.out;
+package org.eimerarchive.archive.dtos.out.resource;
 
+import org.eimerarchive.archive.dtos.out.UpdateResponse;
 import org.eimerarchive.archive.model.enums.ECategory;
 import org.eimerarchive.archive.model.File;
 import org.eimerarchive.archive.model.Resource;

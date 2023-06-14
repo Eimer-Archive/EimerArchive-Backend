@@ -3,7 +3,7 @@ package org.eimerarchive.archive.service;
 import org.eimerarchive.archive.config.custom.SiteConfig;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.config.exception.RestException;
-import org.eimerarchive.archive.dtos.in.CreateUpdateRequest;
+import org.eimerarchive.archive.dtos.in.resource.CreateUpdateRequest;
 import org.eimerarchive.archive.dtos.in.resource.EditResourceUpdateRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.model.Account;

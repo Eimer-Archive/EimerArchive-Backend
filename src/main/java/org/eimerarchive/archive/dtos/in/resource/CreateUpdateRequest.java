@@ -1,8 +1,9 @@
-package org.eimerarchive.archive.dtos.in;
+package org.eimerarchive.archive.dtos.in.resource;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.eimerarchive.archive.dtos.in.Test;
 
 import java.util.List;
 

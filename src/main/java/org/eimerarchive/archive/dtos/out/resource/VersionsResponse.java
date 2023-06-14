@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.dtos.out;
+package org.eimerarchive.archive.dtos.out.resource;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

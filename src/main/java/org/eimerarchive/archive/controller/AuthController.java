@@ -2,8 +2,8 @@ package org.eimerarchive.archive.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.eimerarchive.archive.dtos.in.LoginRequest;
-import org.eimerarchive.archive.dtos.in.SignupRequest;
+import org.eimerarchive.archive.dtos.in.auth.LoginRequest;
+import org.eimerarchive.archive.dtos.in.auth.SignupRequest;
 import org.eimerarchive.archive.service.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

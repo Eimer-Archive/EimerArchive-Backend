@@ -4,7 +4,7 @@ package org.eimerarchive.archive.controller;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.eimerarchive.archive.config.exception.RestException;
-import org.eimerarchive.archive.dtos.in.CreateUpdateRequest;
+import org.eimerarchive.archive.dtos.in.resource.CreateUpdateRequest;
 import org.eimerarchive.archive.service.ResourceUpdateService;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.dtos.out;
+package org.eimerarchive.archive.dtos.out.auth;
 
 import java.util.List;
 

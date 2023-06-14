@@ -2,9 +2,9 @@ package org.eimerarchive.archive.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
-import org.eimerarchive.archive.dtos.in.UserFromTokenRequest;
+import org.eimerarchive.archive.dtos.in.auth.UserFromTokenRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
-import org.eimerarchive.archive.dtos.out.UsernameResponse;
+import org.eimerarchive.archive.dtos.out.auth.UsernameResponse;
 import org.eimerarchive.archive.model.Role;
 import org.eimerarchive.archive.model.Token;
 import org.eimerarchive.archive.model.enums.ERole;

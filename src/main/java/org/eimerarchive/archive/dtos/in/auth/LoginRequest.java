@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.dtos.in;
+package org.eimerarchive.archive.dtos.in.auth;
 
 import jakarta.validation.constraints.NotBlank;
 
