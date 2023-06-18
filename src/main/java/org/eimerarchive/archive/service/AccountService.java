@@ -7,6 +7,7 @@ import org.eimerarchive.archive.dtos.in.auth.LoginRequest;
 import org.eimerarchive.archive.dtos.in.auth.SignupRequest;
 import org.eimerarchive.archive.dtos.out.ErrorResponse;
 import org.eimerarchive.archive.model.Account;
+import org.eimerarchive.archive.model.Role;
 import org.eimerarchive.archive.model.Settings;
 import org.eimerarchive.archive.model.Token;
 import org.eimerarchive.archive.model.enums.ERole;
@@ -77,7 +78,7 @@ public class AccountService implements UserDetailsService {
 
         // Create new user's account
         Account account = new Account(signUpRequest.getUsername(), signUpRequest.getEmail(), this.encoder.encode(signUpRequest.getPassword()), null);
-        account.setRoles(new HashSet<>(Collections.singleton(roleRepository.findByName(ERole.ROLE_USER).get())));
+        account.setRoles(new HashSet<>(Collections.singleton(roleRepository.findRole(ERole.ROLE_USER))));
 
         accountRepository.save(account);
 

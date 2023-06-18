@@ -1,6 +1,6 @@
 package org.eimerarchive.archive.config;
 
-import org.eimerarchive.archive.config.resovlers.AccountArgumentResolver;
+import org.eimerarchive.archive.config.resolvers.AccountArgumentResolver;
 import org.eimerarchive.archive.repositories.AccountRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;

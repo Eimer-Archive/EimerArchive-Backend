@@ -1,7 +1,9 @@
 package org.eimerarchive.archive.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.eimerarchive.archive.model.enums.ERole;
 
@@ -9,6 +11,8 @@ import org.eimerarchive.archive.model.enums.ERole;
 @Setter
 @Entity
 @Table(name = "roles")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
 
     @Id

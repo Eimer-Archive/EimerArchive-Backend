@@ -1,5 +1,6 @@
 package org.eimerarchive.archive.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.eimerarchive.archive.config.exception.RestErrorCode;
 import org.eimerarchive.archive.dtos.in.auth.UserFromTokenRequest;
@@ -27,7 +28,7 @@ public class InfoController {
     private final TokenRepository tokenRepository;
 
     @PostMapping("info")
-    public ResponseEntity<?> getAccountInfoFromToken(@RequestBody UserFromTokenRequest dto) {
+    public ResponseEntity<?> getAccountInfoFromToken(@RequestBody @Valid UserFromTokenRequest dto) {
 
         Optional<Token> optionalToken = tokenRepository.findByToken(UUID.fromString(dto.getToken()));
         if (optionalToken.isEmpty()) return ResponseEntity.badRequest().body(ErrorResponse.create(RestErrorCode.FORBIDDEN.getDescription()));

@@ -1,4 +1,4 @@
-package org.eimerarchive.archive.config.resovlers;
+package org.eimerarchive.archive.config.resolvers;
 
 import org.eimerarchive.archive.model.Account;
 import org.eimerarchive.archive.repositories.AccountRepository;
