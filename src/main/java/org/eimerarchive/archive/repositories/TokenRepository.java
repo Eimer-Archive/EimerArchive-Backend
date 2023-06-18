@@ -10,6 +10,5 @@ import java.util.UUID;
 @Repository
 public interface TokenRepository extends JpaRepository<Token, UUID> {
     Optional<Token> findByToken(UUID token);
-
     boolean existsByToken(UUID token);
 }
